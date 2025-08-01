@@ -62,7 +62,7 @@ body {
     position: relative;
 }
 
-/* --- BARU: Container untuk notifikasi dan score-box --- */
+/* Container untuk notifikasi dan score-box */
 .header-right-items {
     display: flex;
     align-items: center;
@@ -81,7 +81,6 @@ body {
     border-radius: 8px; /* Sudut membulat */
     opacity: 0; /* Dimulai tersembunyi */
     transition: opacity 0.5s ease-in-out;
-    /* pointer-events: none; */ /* Hapus jika ingin bisa dicopy, atau biarkan jika tidak */
     white-space: nowrap; /* Jangan pecah baris */
     overflow: hidden; /* Sembunyikan jika overflow */
     text-overflow: ellipsis; /* Tambah elipsis */
@@ -487,7 +486,7 @@ body {
     }
     /* Notifikasi dan pemenang responsif */
     .player-notification {
-        font-size: 1.6em; /* Lebih kecil lagi */
+        font-size: 1.6em;
     }
     .winner-title {
         font-size: 3.5em;
@@ -539,7 +538,7 @@ body {
     }
     /* Notifikasi dan pemenang responsif */
     .player-notification {
-        font-size: 1.4em; /* Lebih kecil lagi */
+        font-size: 1.4em;
     }
     .winner-title {
         font-size: 2.8em;
@@ -583,7 +582,7 @@ body {
     /* Notifikasi dan pemenang responsif */
     .player-notification {
         font-size: 1.2em;
-        padding: 4px 10px; /* Padding lebih kecil */
+        padding: 4px 10px;
     }
     .winner-title {
         font-size: 2em;
