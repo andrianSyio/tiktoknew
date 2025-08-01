@@ -8,7 +8,7 @@
 /* General Body and Main Container */
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #000000;
+    background-color: #000000; /* Pure black background untuk di luar area game display */
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -16,27 +16,27 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #e0e0e0;
+    color: #e0e0e0; /* Light gray text default */
 }
 
 .app-container {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #000000;
+    background-color: #000000; /* Consistent pure black background */
 }
 
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
-    flex: 3;
-    background-color: #FFFFFF;
+    flex: 3; /* Takes 70% of the width */
+    background-color: #FFFFFF; /* Putih bersih */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 40px;
+    padding: 40px; /* Increased padding for more breathing room */
     box-sizing: border-box;
     position: relative;
-    border-right: 2px solid #E0E0E0;
+    border-right: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
 }
 
 /* Optional: Overlay for live video (if OBS is configured) */
@@ -47,7 +47,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0); /* Sepenuhnya transparan */
     z-index: 0;
 }
 
@@ -62,7 +62,7 @@ body {
     position: relative;
 }
 
-/* Container untuk notifikasi dan score-box */
+/* Container untuk notifikasi pemain dan kotak skor */
 .header-right-items {
     display: flex;
     align-items: center;
@@ -188,7 +188,7 @@ body {
     border: 2px solid #212121;
     transition: all 0.3s ease-in-out;
     color: #212121;
-    height: 70px;
+    height: 70px; /* Tinggi tetap untuk setiap kotak */
     box-sizing: border-box;
 }
 
