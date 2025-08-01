@@ -1,290 +1,282 @@
 /* public/style.css */
 
-/* General Body and Container */
+/* General Body and Main Container */
 body {
-    font-family: 'Arial Black', Arial, sans-serif; /* Font tebal dan jelas */
-    background-color: #1a1a1a; /* Latar belakang gelap */
+    font-family: 'Inter', 'Arial Black', sans-serif; /* Menggunakan Inter sebagai font utama, Arial Black sebagai fallback */
+    background-color: #1a1a2e; /* Dark purple-blue background */
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Pastikan tidak ada scrollbar */
-    display: flex; /* Menggunakan flex untuk mengatur dua area: TV display dan admin panel */
-    height: 100vh;
-    width: 100vw;
-}
-
-/* TV Display Area (Left Half or Main Display) */
-.tv-container {
-    position: relative;
-    flex-grow: 1; /* Ambil ruang sebanyak mungkin */
-    background-color: #000; /* Latar belakang TV hitam */
+    overflow: hidden; /* Prevent scrolling */
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    min-height: 100vh;
+    color: #f0f0f0; /* Default text color */
 }
 
-.live-feed-placeholder {
-    position: absolute; /* Akan menjadi layer di bawah overlay */
+.app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: #1a1a2e; /* Consistent background */
+}
+
+/* --- Game Display Area (Left Column, for OBS Capture) --- */
+.game-display-area {
+    flex: 3; /* Takes 70% of the width (e.g., 3 / (3+1) = 3/4) */
+    background-color: #000; /* Pure black for main game area, ideal for overlays */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out header, question, answers */
+    padding: 30px; /* Padding inside the game display */
+    box-sizing: border-box; /* Include padding in element's total width and height */
+    position: relative; /* For potential background images/video if needed */
+}
+
+/* Optional: Placeholder for actual live video feed */
+.game-display-area::before {
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #333; /* Warna placeholder */
+    background: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=YOUR+LIVE+VIDEO+FEED+HERE') no-repeat center center / cover; /* Placeholder image, replace with your live video setup in OBS */
+    opacity: 0.5; /* Slightly transparent to see game overlay */
+    z-index: 0;
+}
+
+.game-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    color: #eee;
-    font-size: 2em;
-    z-index: 0; /* Pastikan di paling bawah */
-}
-
-.game-overlay {
-    position: relative; /* Ini adalah overlay yang akan muncul di atas live feed */
-    width: 90%; /* Kontrol lebar overlay */
-    height: 90%; /* Kontrol tinggi overlay */
-    display: grid;
-    grid-template-rows: auto 1fr auto; /* Baris: pertanyaan, jawaban, bottom bar */
-    gap: 20px;
-    background-color: rgba(0, 0, 0, 0.7); /* Latar belakang transparan gelap */
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 50px rgba(0, 255, 255, 0.5); /* Efek cahaya neon */
-    z-index: 1; /* Pastikan di atas live feed */
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-}
-
-/* Question Area */
-.question-area {
-    text-align: center;
     padding-bottom: 20px;
-    border-bottom: 3px solid #00ffff; /* Garis bawah pertanyaan dengan warna neon */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 20px;
+    z-index: 1; /* Above placeholder */
+}
+
+.header-label {
+    font-size: 2.5em;
+    font-weight: 800; /* Extra bold */
+    color: #00ffff; /* Cyan/aqua color */
+    letter-spacing: 3px;
+}
+
+.score-box {
+    background-color: rgba(255, 0, 0, 0.8); /* Red box for score */
+    padding: 10px 25px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+.score-box span {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.score-value {
+    font-size: 2.8em;
+    font-weight: 900; /* Heaviest bold */
+    color: #ffeb3b; /* Bright yellow for score value */
+    line-height: 1;
+}
+
+.question-box {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7); /* Slightly transparent background for readability */
+    padding: 25px 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    z-index: 1;
 }
 
 .question-label {
     display: block;
     font-size: 1.2em;
-    color: #ffcc00; /* Warna label kuning */
-    margin-bottom: 5px;
+    font-weight: 700;
+    color: #00ffff;
+    margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .question-text {
-    font-size: 2.5em; /* Ukuran font besar */
-    margin: 0;
+    font-size: 3.5em; /* Very large font for question */
+    font-weight: 900;
     color: #fff;
+    margin: 0;
     line-height: 1.2;
 }
 
-/* Answers Area */
-.answers-area {
-    overflow-y: auto; /* Jika jawaban terlalu banyak */
-    padding-right: 10px; /* Ruang untuk scrollbar */
+.answers-container {
+    flex-grow: 1; /* Take remaining space */
+    overflow-y: auto; /* Enable scrolling if too many answers */
+    padding-right: 15px; /* Space for scrollbar */
+    z-index: 1;
 }
 
 .answers-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid;
-    grid-template-columns: 1fr; /* Satu kolom */
+    display: flex;
+    flex-direction: column;
     gap: 15px;
 }
 
 .answer-item {
-    background-color: rgba(50, 50, 50, 0.8); /* Latar belakang item jawaban */
-    padding: 15px 25px;
-    border-radius: 10px;
-    font-size: 1.8em; /* Ukuran font besar */
+    background-color: rgba(50, 50, 50, 0.8); /* Dark background for answer items */
+    padding: 18px 30px;
+    border-radius: 12px;
+    font-size: 2.2em; /* Large font for answers */
+    font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #555;
+    border: 2px solid #444;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    color: #fff;
 }
 
 .answer-item.revealed {
-    background-color: rgba(0, 150, 0, 0.8); /* Hijau terang saat terungkap */
-    border-color: #00ff00; /* Border hijau neon */
+    background-color: rgba(40, 167, 69, 0.9); /* Green for revealed answers */
+    border-color: #28a745;
     color: #fff;
-    font-weight: bold;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+    font-weight: 700;
+    box-shadow: 0 0 25px rgba(40, 167, 69, 0.7);
 }
 
 .answer-text {
     flex-grow: 1;
     text-align: left;
-    white-space: nowrap; /* Jangan memecah teks ke baris baru */
-    overflow: hidden; /* Sembunyikan jika melebihi */
-    text-overflow: ellipsis; /* Tambahkan elipsis jika terpotong */
 }
 
 .answer-score {
     margin-left: 20px;
-    font-weight: bold;
-    color: #ffcc00; /* Warna skor kuning */
-    font-size: 1.1em;
+    font-weight: 800;
+    color: #ffeb3b; /* Bright yellow for score */
+    font-size: 0.9em; /* Slightly smaller than text */
 }
 
 .answers-list .placeholder {
-    color: #ccc;
+    color: #bbb;
     font-style: italic;
 }
 
-/* Bottom Bar (Total Score) */
-.bottom-bar {
-    text-align: right;
-    padding-top: 20px;
-    border-top: 3px solid #00ffff; /* Garis atas dengan warna neon */
-    display: flex;
-    justify-content: flex-end; /* Posisikan skor di kanan */
-    align-items: center;
-}
 
-.score-display {
-    background-color: rgba(200, 0, 0, 0.8); /* Latar belakang skor merah tua */
-    padding: 10px 20px;
-    border-radius: 10px;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-}
-
-.score-label {
-    font-size: 1.2em;
-    color: #fff;
-    text-transform: uppercase;
-}
-
-.score-value {
-    font-size: 2.5em; /* Ukuran font besar untuk nilai skor */
-    font-weight: bold;
-    color: #ffcc00; /* Warna nilai skor kuning */
-}
-
-/* --- Admin Panel (Right Half or Separate Window) --- */
+/* --- Admin Panel (Right Column, for Host Use) --- */
 .admin-panel {
-    width: 400px; /* Lebar panel admin */
-    background-color: #2c3e50; /* Latar belakang gelap untuk admin */
-    padding: 20px;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
-    color: #ecf0f1;
-    overflow-y: auto; /* Untuk leaderboard yang mungkin panjang */
+    flex: 1; /* Takes 30% of the width (e.g., 1 / (3+1) = 1/4) */
+    background-color: #2c3e50; /* Darker blue-gray for admin panel */
+    padding: 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    border-left: 5px solid #3498db; /* Blue border to separate */
+    overflow-y: auto; /* Allow scrolling for long leaderboards */
 }
 
-.admin-panel h1 {
-    color: #3498db;
-    font-size: 2em;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 10px;
-}
-
-.admin-panel h2 {
-    color: #ecf0f1;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    font-size: 1.5em;
+.admin-header {
     text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.answer-submission {
-    background-color: #34495e;
-    border-radius: 8px;
+.admin-header h2 {
+    font-size: 1.8em;
+    color: #3498db; /* Bright blue for admin header */
+    margin: 0;
+    font-weight: 700;
+}
+
+.admin-section {
+    background-color: #34495e; /* Slightly lighter background for sections */
     padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.answer-submission h3 {
-    color: #f1c40f; /* Kuning untuk judul input */
+.admin-section h3 {
+    font-size: 1.3em;
+    color: #f1c40f; /* Yellow for section titles */
     margin-top: 0;
     margin-bottom: 15px;
-    font-size: 1.3em;
+    font-weight: 600;
 }
 
-.input-group-answer {
+.input-group {
     display: flex;
-    flex-direction: column; /* Input diatur vertikal */
+    flex-direction: column;
     gap: 10px;
 }
 
-.input-group-answer input {
-    width: calc(100% - 24px); /* Sesuaikan padding */
+.input-group input {
     padding: 12px;
-    border: 1px solid #7f8c8d;
-    border-radius: 5px;
+    border: 1px solid #555;
+    border-radius: 8px;
     background-color: #446078;
     color: #fff;
     font-size: 1em;
+    transition: border-color 0.3s ease;
 }
 
-.input-group-answer input::placeholder {
-    color: #bdc3c7;
+.input-group input:focus {
+    border-color: #3498db;
+    outline: none;
 }
 
-.input-group-answer button {
+.input-group input::placeholder {
+    color: #bbb;
+}
+
+.input-group button {
     padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #27ae60; /* Hijau untuk submit */
+    background-color: #2ecc71; /* Green submit button */
     color: white;
+    border: none;
+    border-radius: 8px;
     font-size: 1.1em;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.input-group-answer button:hover {
-    background-color: #229a54;
+.input-group button:hover {
+    background-color: #27ae60;
 }
 
 .control-buttons {
     display: flex;
-    justify-content: space-around;
-    gap: 15px;
-    margin-top: 25px;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .control-buttons button {
     padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #e67e22; /* Oranye untuk kontrol */
+    background-color: #e67e22; /* Orange control buttons */
     color: white;
+    border: none;
+    border-radius: 8px;
     font-size: 1.1em;
+    font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    flex: 1; /* Agar tombol mengambil ruang yang sama */
 }
 
 .control-buttons button:hover {
     background-color: #d35400;
 }
 
-.message {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #ffeeba;
-    border: 1px solid #ffc107;
-    color: #856404;
-    text-align: center;
-    font-weight: bold;
-    display: none;
-}
-
-.message.show {
-    display: block;
-}
-
-/* Leaderboard in Admin Panel */
 .leaderboard-section {
-    margin-top: 30px;
-    background-color: #34495e;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: #34495e; /* Same background as other admin sections */
 }
 
 .leaderboard-list {
@@ -296,9 +288,8 @@ body {
 .leaderboard-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     padding: 10px 0;
-    border-bottom: 1px dashed #7f8c8d; /* Garis putus-putus */
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
     font-size: 1.1em;
 }
 
@@ -307,35 +298,91 @@ body {
 }
 
 .leaderboard-item span:first-child {
-    font-weight: bold;
+    font-weight: 600;
     color: #ecf0f1;
 }
 
 .leaderboard-item span:last-child {
-    color: #f1c40f; /* Kuning untuk skor di leaderboard */
-    font-weight: bold;
+    font-weight: 700;
+    color: #ffeb3b; /* Yellow for leaderboard scores */
 }
 
-/* Responsive adjustments (optional, but good practice) */
+.message {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-weight: bold;
+    display: none; /* Hidden by default */
+}
+
+.message.show {
+    display: block;
+}
+.message.success {
+    background-color: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+.message.error {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+.message.warning {
+    background-color: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .game-display-area {
+        flex: 2; /* Adjust flex ratio */
+    }
+    .admin-panel {
+        flex: 1;
+    }
+}
+
 @media (max-width: 900px) {
-    body {
-        flex-direction: column; /* Stack sections on smaller screens */
+    .app-container {
+        flex-direction: column; /* Stack columns on smaller screens */
         height: auto;
+        min-height: 100vh;
+    }
+    .game-display-area {
+        height: 70vh; /* Give more height when stacked */
+        width: 100%;
+        padding: 20px;
     }
     .admin-panel {
         width: 100%;
-        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        border-left: none; /* Remove left border */
+        border-top: 5px solid #3498db; /* Add top border */
+        padding: 20px;
     }
-    .tv-container {
-        height: 70vh; /* Give more height to TV display */
+    .game-header, .question-box, .answers-container {
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+    .question-text {
+        font-size: 2.5em; /* Adjust font size */
+    }
+    .answer-item {
+        font-size: 1.8em;
+        padding: 15px 20px;
+    }
+    .header-label {
+        font-size: 1.8em;
+    }
+    .score-value {
+        font-size: 2.2em;
     }
 }
 
 @media (max-width: 600px) {
-    .game-overlay {
+    .game-display-area {
         padding: 15px;
-        width: 95%;
-        height: 95%;
     }
     .question-text {
         font-size: 1.8em;
@@ -344,13 +391,16 @@ body {
         font-size: 1.4em;
         padding: 10px 15px;
     }
+    .header-label {
+        font-size: 1.4em;
+    }
     .score-value {
-        font-size: 2em;
+        font-size: 1.8em;
     }
-    .admin-panel h1 {
-        font-size: 1.6em;
+    .admin-panel {
+        padding: 15px;
     }
-    .input-group-answer input, .input-group-answer button, .control-buttons button {
+    .input-group input, .input-group button, .control-buttons button {
         font-size: 0.9em;
         padding: 10px;
     }
