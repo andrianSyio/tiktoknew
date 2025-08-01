@@ -64,7 +64,7 @@ function initializeGame() {
     }
 }
 
-// Panggil inisialisasi saat aplikasi dimulai
+// Panggil inisialisasi saat aplikasi dimulai (akan di-reset di setiap instance serverless)
 initializeGame();
 
 
@@ -115,7 +115,6 @@ app.post('/api/submit-answer', (req, res) => {
         totalSkor += foundAnswer.score;
         updateCurrentRevealedAnswersData(); // Update data jawaban terungkap
 
-        // Selalu kirim status game lengkap yang terbaru
         if (jawabanTerungkap.size === currentSoal.answers.length) {
             // Semua jawaban terungkap, otomatis pindah soal
             if (currentSoalIndex < shuffledSoal.length - 1) {
