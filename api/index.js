@@ -1,105 +1,157 @@
 // api/index.js
+
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// Middleware
-app.use(cors()); // Mengizinkan permintaan dari domain frontend Anda (penting untuk development lokal)
-app.use(express.json()); // Untuk memparsing body request JSON
+app.use(cors());
+app.use(express.json());
 
-// Muat data soal dari file JSON
-let soalGame;
-try {
-    soalGame = require('./data-soal.json'); // Path relatif terhadap index.js
-} catch (error) {
-    console.error("Gagal memuat data-soal.json:", error);
-    soalGame = []; // Pastikan soalGame adalah array kosong jika gagal dimuat
+let allSoal; // Semua soal yang dimuat dari data-soal.json
+let shuffledSoal = []; // Soal yang sudah diacak dan belum dimainkan
+let currentSoalIndex = 0; // Indeks soal saat ini dari shuffledSoal
+let totalSkor = 0; // Total skor game
+let jawabanTerungkap = new Set(); // Melacak jawaban yang sudah benar untuk soal saat ini (teksnya)
+let currentRevealedAnswersData = []; // Data lengkap jawaban yang terungkap (objek {text, score, isRevealed})
+
+// Fungsi untuk mengacak array (Fisher-Yates shuffle)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-// State game (sementara, akan hilang jika server restart)
-let currentSoalIndex = 0; // Indeks soal yang sedang dimainkan
-let totalSkor = 0;       // Total skor game
-let jawabanTerungkap = new Set(); // Melacak jawaban yang sudah benar untuk soal saat ini
-let currentRevealedAnswers = [];  // Data jawaban yang akan dikirim ke frontend
+// Fungsi untuk mendapatkan jawaban lengkap dari soal saat ini
+function getCurrentQuestionFullAnswers() {
+    if (currentSoalIndex >= shuffledSoal.length || shuffledSoal.length === 0) {
+        return [];
+    }
+    return shuffledSoal[currentSoalIndex].answers;
+}
 
-// Fungsi untuk memperbarui status jawaban yang terungkap
-function updateRevealedAnswers() {
-    if (currentSoalIndex >= soalGame.length) {
-        currentRevealedAnswers = [];
+// Fungsi untuk memperbarui `currentRevealedAnswersData` berdasarkan `jawabanTerungkap`
+// Ini penting agar data yang dikirim ke frontend selalu konsisten
+function updateCurrentRevealedAnswersData() {
+    if (currentSoalIndex >= shuffledSoal.length || shuffledSoal.length === 0) {
+        currentRevealedAnswersData = [];
         return;
     }
-    const currentSoal = soalGame[currentSoalIndex];
-    currentRevealedAnswers = currentSoal.answers.map(ans => ({
-        text: jawabanTerungkap.has(ans.text.toLowerCase()) ? ans.text : '____', // Tampilkan teks jika terungkap, kalau tidak '____'
-        score: jawabanTerungkap.has(ans.text.toLowerCase()) ? ans.score : 0,    // Tampilkan skor jika terungkap
-        isRevealed: jawabanTerungkap.has(ans.text.toLowerCase())                // Status apakah sudah terungkap
-    }));
+    const currentSoal = shuffledSoal[currentSoalIndex];
+    currentRevealedAnswersData = currentSoal.answers.map(ans => ({
+        text: ans.text,
+        score: ans.score,
+        isRevealed: jawabanTerungkap.has(ans.text.toLowerCase())
+    })).filter(ans => ans.isRevealed); // Hanya kirim yang isRevealed: true
 }
 
-// Inisialisasi status game saat server dimulai
-updateRevealedAnswers();
+
+// Inisialisasi game state
+function initializeGame() {
+    try {
+        allSoal = require('./data-soal.json'); // Muat semua soal
+        shuffledSoal = shuffleArray([...allSoal]); // Acak dan buat salinannya
+        currentSoalIndex = 0; // Mulai dari soal pertama di array acak
+        totalSkor = 0;
+        jawabanTerungkap.clear();
+        updateCurrentRevealedAnswersData(); // Pastikan data awal terupdate
+    } catch (error) {
+        console.error("Gagal memuat atau mengacak data-soal.json:", error);
+        allSoal = [];
+        shuffledSoal = [];
+    }
+}
+
+// Panggil inisialisasi saat aplikasi dimulai
+initializeGame();
+
 
 // --- API Endpoints ---
 
-// Endpoint untuk mendapatkan soal dan status game saat ini
 app.get('/api/current-question', (req, res) => {
-    if (currentSoalIndex >= soalGame.length) {
+    if (currentSoalIndex >= shuffledSoal.length || shuffledSoal.length === 0) {
         return res.json({
-            question: "Game Selesai!",
-            answers: [],
-            revealedAnswers: [],
-            score: totalSkor, // Hanya satu skor
+            question: "Game Selesai! Tidak ada soal lagi.",
+            answers: [], // Kirim array kosong jika game selesai
+            revealedAnswers: [], // Kirim array kosong jika game selesai
+            score: totalSkor,
             gameEnded: true
         });
     }
 
-    const currentSoal = soalGame[currentSoalIndex];
-    updateRevealedAnswers(); // Pastikan selalu diperbarui sebelum dikirim
+    const currentSoal = shuffledSoal[currentSoalIndex];
+    updateCurrentRevealedAnswersData(); // Pastikan data terbaru
 
     res.json({
         question: currentSoal.question,
-        answers: currentSoal.answers, // Mengirim semua jawaban (frontend bisa menyembunyikan)
-        revealedAnswers: currentRevealedAnswers, // Jawaban yang sudah terungkap
-        score: totalSkor, // Hanya satu skor
+        answers: currentSoal.answers, // Kirim semua jawaban untuk soal ini
+        revealedAnswers: currentRevealedAnswersData, // Hanya jawaban yang terungkap
+        score: totalSkor,
         gameEnded: false
     });
 });
 
-// Endpoint untuk submit jawaban
 app.post('/api/submit-answer', (req, res) => {
-    const { answer } = req.body; // Hanya perlu 'answer', tidak perlu 'team'
+    const { answer } = req.body;
 
     if (!answer) {
         return res.status(400).json({ success: false, message: "Jawaban harus diisi." });
     }
-    if (currentSoalIndex >= soalGame.length) {
-        return res.status(400).json({ success: false, message: "Game sudah selesai." });
+    if (currentSoalIndex >= shuffledSoal.length || shuffledSoal.length === 0) {
+        return res.status(400).json({ success: false, message: "Game sudah selesai atau tidak ada soal." });
     }
 
-    const currentSoal = soalGame[currentSoalIndex];
-    const normalizedAnswer = answer.toLowerCase().trim(); // Normalisasi jawaban untuk perbandingan
+    const currentSoal = shuffledSoal[currentSoalIndex];
+    const normalizedAnswer = answer.toLowerCase().trim();
 
-    // Cari jawaban yang benar dan belum terungkap
     const foundAnswer = currentSoal.answers.find(ans =>
         ans.text.toLowerCase() === normalizedAnswer && !jawabanTerungkap.has(ans.text.toLowerCase())
     );
 
     if (foundAnswer) {
-        jawabanTerungkap.add(foundAnswer.text.toLowerCase()); // Tambahkan ke Set jawaban terungkap
-        totalSkor += foundAnswer.score; // Tambahkan skor ke total
+        jawabanTerungkap.add(foundAnswer.text.toLowerCase());
+        totalSkor += foundAnswer.score;
+        updateCurrentRevealedAnswersData(); // Update data jawaban terungkap
 
-        updateRevealedAnswers(); // Perbarui status jawaban terungkap
+        // Always return the full answers list for the current question
+        const fullAnswers = getCurrentQuestionFullAnswers();
 
-        // Periksa apakah semua jawaban sudah terungkap untuk soal ini
+        // Check if all answers for the current question are revealed
         if (jawabanTerungkap.size === currentSoal.answers.length) {
-            return res.json({
-                success: true,
-                message: "Jawaban benar! Semua jawaban untuk soal ini telah terungkap.",
-                answerRevealed: foundAnswer.text,
-                scoreAdded: foundAnswer.score,
-                score: totalSkor,
-                allAnswersRevealedForCurrentQuestion: true
-            });
+            // Automatically move to the next question if all answers are revealed
+            if (currentSoalIndex < shuffledSoal.length - 1) {
+                currentSoalIndex++;
+                jawabanTerungkap.clear(); // Reset for new question
+                updateCurrentRevealedAnswersData(); // Update for the new question
+                return res.json({
+                    success: true,
+                    message: "Jawaban benar! Semua jawaban untuk soal ini telah terungkap. Pindah ke soal berikutnya.",
+                    answerRevealed: foundAnswer.text,
+                    scoreAdded: foundAnswer.score,
+                    score: totalSkor,
+                    allAnswersRevealedForCurrentQuestion: true,
+                    movedToNextQuestion: true, // Flag for frontend
+                    answers: getCurrentQuestionFullAnswers(), // Jawaban lengkap untuk soal baru
+                    revealedAnswers: currentRevealedAnswersData // Jawaban terungkap untuk soal baru (kosong)
+                });
+            } else {
+                // Last question, all answers revealed, game ends
+                currentSoalIndex++; // Mark game as finished
+                jawabanTerungkap.clear();
+                updateCurrentRevealedAnswersData();
+                return res.json({
+                    success: true,
+                    message: "Jawaban benar! Semua soal sudah habis. Game selesai.",
+                    answerRevealed: foundAnswer.text,
+                    scoreAdded: foundAnswer.score,
+                    score: totalSkor,
+                    allAnswersRevealedForCurrentQuestion: true,
+                    gameEnded: true,
+                    answers: [], // Kosong jika game selesai
+                    revealedAnswers: [] // Kosong jika game selesai
+                });
+            }
         } else {
             return res.json({
                 success: true,
@@ -107,41 +159,59 @@ app.post('/api/submit-answer', (req, res) => {
                 answerRevealed: foundAnswer.text,
                 scoreAdded: foundAnswer.score,
                 score: totalSkor,
-                allAnswersRevealedForCurrentQuestion: false
+                allAnswersRevealedForCurrentQuestion: false,
+                answers: fullAnswers, // Kirim jawaban lengkap untuk soal yang sama
+                revealedAnswers: currentRevealedAnswersData // Kirim jawaban terungkap yang diperbarui
             });
         }
-    } else {
+    } else { // If answer is wrong or already revealed
+        updateCurrentRevealedAnswersData(); // Pastikan data jawaban terungkap terbarui
         return res.status(400).json({
             success: false,
             message: "Jawaban salah atau sudah terungkap.",
-            score: totalSkor // Tetap kirim skor terbaru
+            score: totalSkor,
+            answers: getCurrentQuestionFullAnswers(), // Kirim jawaban lengkap
+            revealedAnswers: currentRevealedAnswersData // Kirim jawaban terungkap saat ini
         });
     }
 });
 
-// Endpoint untuk pindah ke soal berikutnya (hanya untuk admin/host)
 app.post('/api/next-question', (req, res) => {
-    if (currentSoalIndex < soalGame.length - 1) {
+    if (currentSoalIndex < shuffledSoal.length - 1) {
         currentSoalIndex++;
         jawabanTerungkap.clear(); // Reset jawaban terungkap untuk soal baru
-        updateRevealedAnswers();
-        return res.json({ success: true, message: "Pindah ke soal berikutnya." });
+        updateCurrentRevealedAnswersData(); // Update untuk soal baru
+        return res.json({
+            success: true,
+            message: "Pindah ke soal berikutnya.",
+            answers: getCurrentQuestionFullAnswers(),
+            revealedAnswers: currentRevealedAnswersData,
+            score: totalSkor // Tetap kirim skor
+        });
     } else {
-        currentSoalIndex = soalGame.length; // Tandai game selesai
+        currentSoalIndex = shuffledSoal.length; // Tandai game selesai
         jawabanTerungkap.clear();
-        updateRevealedAnswers();
-        return res.json({ success: true, message: "Semua soal sudah habis. Game selesai." });
+        updateCurrentRevealedAnswersData();
+        return res.json({
+            success: true,
+            message: "Semua soal sudah habis. Game selesai.",
+            answers: [],
+            revealedAnswers: [],
+            score: totalSkor,
+            gameEnded: true
+        });
     }
 });
 
-// Endpoint untuk reset game (hanya untuk admin/host)
 app.post('/api/reset-game', (req, res) => {
-    currentSoalIndex = 0;
-    totalSkor = 0; // Reset total skor
-    jawabanTerungkap.clear();
-    updateRevealedAnswers();
-    res.json({ success: true, message: "Game di-reset." });
+    initializeGame(); // Reset game dengan mengacak soal lagi
+    res.json({
+        success: true,
+        message: "Game di-reset.",
+        answers: getCurrentQuestionFullAnswers(),
+        revealedAnswers: currentRevealedAnswersData,
+        score: totalSkor
+    });
 });
 
-// Export aplikasi Express Anda agar bisa dijalankan oleh Vercel sebagai Serverless Function
 module.exports = app;
