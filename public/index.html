@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script> 
-</head>
+    </head>
 <body>
     <div class="app-container">
         <div class="game-display-area">
@@ -60,7 +59,8 @@
                 <div class="control-buttons">
                     <button onclick="nextQuestion()">Soal Berikutnya</button>
                     <button onclick="resetGame()">RESET GAME</button>
-                    </div>
+                    <button id="toggleRefreshButton" onclick="toggleAutoRefresh()">Mulai Auto-Update</button>
+                </div>
             </div>
 
             <div class="admin-section leaderboard-section">
