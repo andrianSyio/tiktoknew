@@ -4,7 +4,7 @@ const API_URL = '/api';
 const questionElement = document.getElementById('question');
 const answersList = document.getElementById('answers');
 const totalScoreElement = document.getElementById('totalScore');
-const messageElement = document.getElementById('message'); // For admin panel messages
+const messageElement = document.getElementById('message');
 
 // New elements for player input and leaderboard
 const playerNameInput = document.getElementById('playerNameInput');
@@ -50,7 +50,7 @@ async function submitPlayerAnswer() {
         const response = await fetch(`${API_URL}/submit-answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answer })
+            body: JSON.stringify({ answer }) // Only sending 'answer'
         });
         const data = await response.json();
 
@@ -72,7 +72,7 @@ async function submitPlayerAnswer() {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
         }
         answerInput.value = ''; // Clear answer input
-        // playerNameInput.value = ''; // Optionally clear player name after each submission
+        // playerNameInput.value = ''; // Optionally clear player name after each submission, or let it stay for repeated answers
         fetchCurrentQuestion(); // Update main game display
     } catch (error) {
         console.error("Error submitting player answer:", error);
@@ -86,7 +86,7 @@ async function fetchCurrentQuestion() {
         const data = await response.json();
 
         if (data.gameEnded) {
-            questionElement.innerText = data.question;
+            questionElement.innerText = data.question; // "Game Selesai!"
             answersList.innerHTML = '<li class="answer-item"><span class="answer-text">Terima kasih sudah bermain!</span></li>';
             totalScoreElement.innerText = data.score;
             showMessage("Game telah berakhir. Silakan reset untuk mulai baru.", 'info', 5000);
@@ -96,7 +96,7 @@ async function fetchCurrentQuestion() {
         questionElement.innerText = data.question;
         totalScoreElement.innerText = data.score;
 
-        answersList.innerHTML = '';
+        answersList.innerHTML = ''; // Kosongkan daftar jawaban sebelumnya
         data.revealedAnswers.forEach(ans => {
             const li = document.createElement('li');
             li.classList.add('answer-item');
