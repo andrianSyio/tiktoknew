@@ -12,23 +12,30 @@
     <div class="app-container">
         <div class="game-display-area">
             <div class="game-header">
-                <span class="header-label">FAMILY 100 LIVE</span>
+                <span id="playerNotification" class="player-notification"></span>
                 <div class="score-box">
                     <span>TOTAL SKOR</span>
                     <span id="totalScore" class="score-value">0</span>
                 </div>
             </div>
 
-            <div class="question-box">
+            <div class="question-box" id="questionBox">
                 <span class="question-label">PERTANYAAN</span>
                 <h2 id="question" class="question-text">Memuat pertanyaan...</h2>
             </div>
 
-            <div class="answers-container">
+            <div class="answers-container" id="answersContainer">
                 <ul id="answers" class="answers-list">
                     </ul>
             </div>
-        </div>
+
+            <div class="winner-overlay hidden" id="winnerOverlay">
+                <h2 class="winner-title">SEMUA JAWABAN TERJAWAB!</h2>
+                <p class="winner-message">Pemain Terbaik Putaran Ini:</p>
+                <h1 id="roundWinnerName" class="round-winner-name"></h1>
+                <p class="winner-score-info">Dengan <span id="roundWinnerScore"></span> Poin!</p>
+            </div>
+            </div>
 
         <div class="admin-panel">
             <div class="admin-header">
