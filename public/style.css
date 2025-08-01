@@ -8,7 +8,7 @@
 /* General Body and Main Container */
 body {
     font-family: 'Montserrat', sans-serif; /* Modern, clean font */
-    background-color: #000000; /* Pure black background */
+    background-color: #000000; /* Pure black background untuk di luar area game display */
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -16,7 +16,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #e0e0e0; /* Light gray text */
+    color: #e0e0e0; /* Light gray text default */
 }
 
 .app-container {
@@ -29,17 +29,19 @@ body {
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
     flex: 3; /* Takes 70% of the width */
-    background-color: #000000; /* Pure black for main game area, ideal for overlays */
+    /* --- PERUBAHAN UTAMA DI SINI: Background Putih --- */
+    background-color: #FFFFFF; /* Putih bersih */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     padding: 40px; /* Increased padding for more breathing room */
     box-sizing: border-box;
     position: relative;
-    border-right: 2px solid rgba(255, 255, 255, 0.1); /* Subtle separator */
+    border-right: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
 }
 
 /* Optional: Overlay for live video (if OBS is configured) */
+/* --- Hapus atau buat lebih transparan jika video live akan terlihat di sini --- */
 .game-display-area::before {
     content: '';
     position: absolute;
@@ -47,7 +49,8 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Subtle transparent overlay, no glow */
+    /* Gunakan background-color transparan jika video live ingin tetap terlihat di belakang UI */
+    background-color: rgba(255, 255, 255, 0); /* Sepenuhnya transparan */
     z-index: 0;
 }
 
@@ -55,52 +58,56 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 25px; /* More space */
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Softer separator */
+    padding-bottom: 25px;
+    border-bottom: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
     margin-bottom: 30px;
     z-index: 1; /* Above placeholder */
 }
 
 .header-label {
-    font-family: 'Oswald', sans-serif; /* Bolder, condensed font for headers */
-    font-size: 3em; /* Larger, impactful */
+    font-family: 'Oswald', sans-serif;
+    font-size: 3em;
     font-weight: 700;
-    color: #00E676; /* Bright green, no glow */
+    color: #4CAF50; /* Fresh green */
     letter-spacing: 3px;
+    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .score-box {
-    background-color: #212121; /* Darker background for score */
+    /* --- Hapus box-shadow --- */
+    background-color: #F5F5F5; /* Abu-abu terang untuk kotak skor */
     padding: 12px 30px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid #FF1744; /* Bright red border for clear definition */
+    border: 1px solid #FF1744; /* Bright red border */
 }
 
 .score-box span {
     font-size: 1em;
     font-weight: 600;
-    color: #bdbdbd; /* Lighter gray for label */
+    color: #757575; /* Darker gray for label on white background */
     text-transform: uppercase;
 }
 
 .score-value {
     font-family: 'Oswald', sans-serif;
-    font-size: 3.5em; /* Very large for impact */
+    font-size: 3.5em;
     font-weight: 700;
-    color: #FFEA00; /* Bright yellow for score value */
+    color: #D32F2F; /* Merah gelap untuk nilai skor */
     line-height: 1;
+    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .question-box {
     text-align: center;
-    background-color: #212121; /* Dark grey solid background */
+    /* --- Hapus box-shadow --- */
+    background-color: #F5F5F5; /* Abu-abu terang untuk kotak pertanyaan */
     padding: 30px 40px;
     border-radius: 15px;
-    margin-bottom: 40px; /* More space */
-    border: 1px solid #00BCD4; /* Cyan border for definition */
+    margin-bottom: 40px;
+    border: 1px solid #2196F3; /* Biru terang untuk border pertanyaan */
     z-index: 1;
 }
 
@@ -109,27 +116,27 @@ body {
     display: block;
     font-size: 1.4em;
     font-weight: 600;
-    color: #00BCD4; /* Cyan */
+    color: #2196F3; /* Biru terang untuk label pertanyaan */
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 .question-text {
-    /* --- PERUBAHAN DI SINI: Ukuran font pertanyaan lebih kecil --- */
     font-family: 'Oswald', sans-serif;
-    font-size: 3.2em; /* Dikurangi dari 4.5em */
+    font-size: 3.2em; /* Ukuran font pertanyaan */
     font-weight: 700;
-    color: #fff;
+    color: #212121; /* Hitam gelap untuk teks pertanyaan */
     margin: 0;
     line-height: 1.1;
+    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .answers-container {
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    align-items: center; /* Menggunakan center agar daftar jawaban terpusat di tengah vertikal */
+    align-items: center;
     z-index: 1;
     padding-bottom: 20px;
 }
@@ -140,34 +147,35 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Dikurangi dari 15px untuk kerapian 5 kotak */
+    gap: 10px;
     width: 100%;
     max-width: 700px;
-    /* --- PENTING: Penyesuaian tinggi untuk menampung 5 kotak jawaban dengan rapi --- */
-    height: calc((70px * 5) + (10px * 4)); /* Tinggi 5 kotak + 4 celah (gap) */
+    height: calc((70px * 5) + (10px * 4)); /* Tinggi untuk 5 kotak + gap */
 }
 
 .answer-item {
-    background-color: #212121; /* Dark grey solid background */
-    padding: 20px 35px; /* More padding */
+    /* --- Hapus box-shadow --- */
+    background-color: #FFFFFF; /* Putih bersih untuk kotak jawaban */
+    padding: 20px 35px;
     border-radius: 12px;
-    font-size: 2.5em; /* Tetap besar agar mudah dibaca */
+    font-size: 2.5em;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #4CAF50; /* Border hijau terang agar lebih terlihat */
+    border: 2px solid #E0E0E0; /* Border abu-abu terang */
     transition: all 0.3s ease-in-out;
-    color: #e0e0e0;
-    height: 70px; /* Fixed height for 5 boxes */
+    color: #424242; /* Abu-abu gelap untuk teks jawaban */
+    height: 70px;
     box-sizing: border-box;
 }
 
 .answer-item.revealed {
-    background-color: #4CAF50; /* Vibrant green */
-    border-color: #81C784; /* Lighter green border */
-    color: #fff;
+    background-color: #4CAF50; /* Hijau terang saat terungkap */
+    border-color: #81C784; /* Border hijau lebih terang */
+    color: #fff; /* Teks putih saat terungkap */
     font-weight: 700;
+    /* box-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .answer-text {
@@ -179,28 +187,29 @@ body {
 }
 
 .answer-score {
-    margin-left: 25px; /* More space */
+    margin-left: 25px;
     font-weight: 800;
-    color: #FFEA00; /* Bright yellow */
+    color: #FFEA00; /* Kuning terang untuk skor */
     font-size: 0.9em;
+    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .answers-list .placeholder {
-    color: #9e9e9e; /* Lighter gray for placeholder */
+    color: #9E9E9E; /* Abu-abu sedang untuk placeholder */
     font-style: italic;
 }
 
 
 /* --- Admin Panel (Right Column, for Host Use) --- */
 .admin-panel {
-    flex: 1; /* Takes 30% of the width */
-    background-color: #212121; /* Darker grey for admin panel */
+    flex: 1;
+    background-color: #212121; /* Tetap gelap untuk panel admin */
     padding: 30px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 30px; /* Increased gap */
-    border-left: 5px solid #424242; /* Darker border to separate, no vibrant glow */
+    gap: 30px;
+    border-left: 5px solid #424242;
     overflow-y: auto;
 }
 
@@ -213,22 +222,22 @@ body {
 .admin-header h2 {
     font-family: 'Oswald', sans-serif;
     font-size: 2em;
-    color: #BBDEFB; /* Lighter blue for admin header */
+    color: #BBDEFB;
     margin: 0;
     font-weight: 700;
     letter-spacing: 1px;
 }
 
 .admin-section {
-    background-color: #313131; /* Slightly lighter background for sections */
-    padding: 25px; /* More padding */
+    background-color: #313131;
+    padding: 25px;
     border-radius: 12px;
-    border: 1px solid #424242; /* Consistent dark border */
+    border: 1px solid #424242;
 }
 
 .admin-section h3 {
     font-size: 1.4em;
-    color: #FFD54F; /* Amber for section titles */
+    color: #FFD54F;
     margin-top: 0;
     margin-bottom: 20px;
     font-weight: 700;
@@ -238,21 +247,21 @@ body {
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* More space */
+    gap: 15px;
 }
 
 .input-group input {
     padding: 15px;
     border: 1px solid #555;
     border-radius: 8px;
-    background-color: #424242; /* Darker input background */
+    background-color: #424242;
     color: #fff;
     font-size: 1.1em;
     transition: border-color 0.3s ease;
 }
 
 .input-group input:focus {
-    border-color: #BBDEFB; /* Light blue on focus */
+    border-color: #BBDEFB;
     outline: none;
 }
 
@@ -262,7 +271,7 @@ body {
 
 .input-group button {
     padding: 15px 25px;
-    background-color: #4CAF50; /* Green submit button */
+    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 8px;
@@ -289,7 +298,7 @@ body {
 
 .control-buttons button {
     padding: 15px 25px;
-    background-color: #FF5722; /* Deep orange control buttons */
+    background-color: #FF5722;
     color: white;
     border: none;
     border-radius: 8px;
@@ -308,7 +317,7 @@ body {
 }
 
 .leaderboard-section {
-    background-color: #313131; /* Same background as other admin sections */
+    background-color: #313131;
 }
 
 .leaderboard-list {
@@ -321,7 +330,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.1); /* Lighter dashed line */
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
     font-size: 1.1em;
 }
 
@@ -336,7 +345,7 @@ body {
 
 .leaderboard-item span:last-child {
     font-weight: 700;
-    color: #FFEA00; /* Yellow for leaderboard scores */
+    color: #FFEA00;
 }
 
 .message {
