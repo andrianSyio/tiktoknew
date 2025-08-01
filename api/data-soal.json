@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "question": "Sebutkan hewan yang memiliki kantung?",
+        "answers": [
+            {"text": "Kangguru", "score": 40},
+            {"text": "Koala", "score": 30},
+            {"text": "Oposum", "score": 20},
+            {"text": "Sugar Glider", "score": 10}
+        ]
+    },
+    {
+        "id": 2,
+        "question": "Apa yang dilakukan orang saat bangun tidur?",
+        "answers": [
+            {"text": "Mandi", "score": 35},
+            {"text": "Sikat Gigi", "score": 30},
+            {"text": "Sarapan", "score": 20},
+            {"text": "Minum Air", "score": 15}
+        ]
+    },
+    {
+        "id": 3,
+        "question": "Makanan yang cocok disantap saat hujan?",
+        "answers": [
+            {"text": "Mie Instan", "score": 40},
+            {"text": "Bakso", "score": 30},
+            {"text": "Sop", "score": 20},
+            {"text": "Kopi", "score": 10}
+        ]
+    }
+]
