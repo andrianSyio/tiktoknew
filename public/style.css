@@ -29,7 +29,6 @@ body {
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
     flex: 3; /* Takes 70% of the width */
-    /* --- PERUBAHAN UTAMA DI SINI: Background Putih --- */
     background-color: #FFFFFF; /* Putih bersih */
     display: flex;
     flex-direction: column;
@@ -41,7 +40,6 @@ body {
 }
 
 /* Optional: Overlay for live video (if OBS is configured) */
-/* --- Hapus atau buat lebih transparan jika video live akan terlihat di sini --- */
 .game-display-area::before {
     content: '';
     position: absolute;
@@ -49,7 +47,6 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Gunakan background-color transparan jika video live ingin tetap terlihat di belakang UI */
     background-color: rgba(255, 255, 255, 0); /* Sepenuhnya transparan */
     z-index: 0;
 }
@@ -70,11 +67,9 @@ body {
     font-weight: 700;
     color: #4CAF50; /* Fresh green */
     letter-spacing: 3px;
-    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .score-box {
-    /* --- Hapus box-shadow --- */
     background-color: #F5F5F5; /* Abu-abu terang untuk kotak skor */
     padding: 12px 30px;
     border-radius: 10px;
@@ -97,12 +92,10 @@ body {
     font-weight: 700;
     color: #D32F2F; /* Merah gelap untuk nilai skor */
     line-height: 1;
-    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .question-box {
     text-align: center;
-    /* --- Hapus box-shadow --- */
     background-color: #F5F5F5; /* Abu-abu terang untuk kotak pertanyaan */
     padding: 30px 40px;
     border-radius: 15px;
@@ -123,20 +116,20 @@ body {
 }
 
 .question-text {
+    /* --- PERUBAHAN DI SINI: Ukuran font pertanyaan lebih kecil --- */
     font-family: 'Oswald', sans-serif;
-    font-size: 3.2em; /* Ukuran font pertanyaan */
+    font-size: 2.8em; /* Dikurangi lagi dari 3.2em */
     font-weight: 700;
     color: #212121; /* Hitam gelap untuk teks pertanyaan */
     margin: 0;
     line-height: 1.1;
-    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .answers-container {
     flex-grow: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Pusatkan horizontal */
+    align-items: center; /* Pusatkan vertikal */
     z-index: 1;
     padding-bottom: 20px;
 }
@@ -145,37 +138,53 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid; /* --- PENTING: Gunakan CSS Grid --- */
+    grid-template-columns: 1fr 1fr; /* 2 kolom dengan lebar yang sama */
+    gap: 15px; /* Jarak antar kotak, disesuaikan */
     width: 100%;
-    max-width: 700px;
-    height: calc((70px * 5) + (10px * 4)); /* Tinggi untuk 5 kotak + gap */
+    max-width: 800px; /* Lebar maksimal untuk daftar jawaban */
+    /* Tinggi total container answers-list:
+       Untuk 3 baris: (tinggi item * 3) + (gap * 2)
+       Contoh: (70px * 3) + (15px * 2) = 210px + 30px = 240px.
+       Atau bisa atur auto dan biarkan grid menghitung. */
+    /* height: auto; Biarkan grid menghitung tingginya */
 }
 
 .answer-item {
-    /* --- Hapus box-shadow --- */
     background-color: #FFFFFF; /* Putih bersih untuk kotak jawaban */
-    padding: 20px 35px;
+    padding: 20px; /* Padding disesuaikan */
     border-radius: 12px;
-    font-size: 2.5em;
+    font-size: 2.2em; /* Font tetap besar */
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #E0E0E0; /* Border abu-abu terang */
+    border: 2px solid #212121; /* Border hitam gelap agar sangat terlihat di background putih */
     transition: all 0.3s ease-in-out;
-    color: #424242; /* Abu-abu gelap untuk teks jawaban */
-    height: 70px;
-    box-sizing: border-box;
+    color: #212121; /* Hitam gelap untuk teks jawaban */
+    height: 70px; /* Tinggi tetap untuk setiap kotak */
+    box-sizing: border-box; /* Pastikan padding dan border masuk perhitungan tinggi */
 }
+
+/* --- PENTING: Aturan Grid untuk Layout 1-2-2 --- */
+.answers-list li:nth-child(1) {
+    grid-column: span 2; /* Kotak pertama ambil 2 kolom (membuat 1 di atas) */
+}
+
+.answers-list li:nth-child(2),
+.answers-list li:nth-child(3),
+.answers-list li:nth-child(4),
+.answers-list li:nth-child(5) {
+    grid-column: span 1; /* Kotak sisanya ambil 1 kolom */
+}
+/* Pastikan script.js selalu merender 5 <li> */
+
 
 .answer-item.revealed {
     background-color: #4CAF50; /* Hijau terang saat terungkap */
     border-color: #81C784; /* Border hijau lebih terang */
     color: #fff; /* Teks putih saat terungkap */
     font-weight: 700;
-    /* box-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .answer-text {
@@ -191,7 +200,6 @@ body {
     font-weight: 800;
     color: #FFEA00; /* Kuning terang untuk skor */
     font-size: 0.9em;
-    /* text-shadow: none; */ /* Pastikan tidak ada shadow */
 }
 
 .answers-list .placeholder {
@@ -202,7 +210,7 @@ body {
 
 /* --- Admin Panel (Right Column, for Host Use) --- */
 .admin-panel {
-    flex: 1;
+    flex: 1; /* Takes 30% of the width */
     background-color: #212121; /* Tetap gelap untuk panel admin */
     padding: 30px;
     box-sizing: border-box;
@@ -410,6 +418,9 @@ body {
     .question-text {
         font-size: 2.5em; /* Adjusted for smaller screens */
     }
+    .answers-list {
+        gap: 10px; /* Adjust gap for smaller screens */
+    }
     .answer-item {
         font-size: 1.8em;
         padding: 15px 25px;
@@ -432,6 +443,9 @@ body {
     }
     .question-text {
         font-size: 2.0em; /* Further adjusted for very small screens */
+    }
+    .answers-list {
+        gap: 8px; /* Even smaller gap for tiny screens */
     }
     .answer-item {
         font-size: 1.6em;
