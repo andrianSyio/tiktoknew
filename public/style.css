@@ -53,10 +53,8 @@ body {
 
 .game-header {
     display: flex;
-    /* --- PERUBAHAN DI SINI: Flex start dan gap --- */
-    justify-content: flex-start; /* Mulai dari kiri */
+    justify-content: space-between; /* Menjaga FAMILY 100 LIVE di kiri dan sisanya di kanan */
     align-items: center;
-    gap: 20px; /* Jarak antara label dan elemen lainnya */
     padding-bottom: 25px;
     border-bottom: 2px solid #E0E0E0;
     margin-bottom: 30px;
@@ -64,14 +62,15 @@ body {
     position: relative;
 }
 
-/* --- PERUBAHAN DI SINI: Gaya Notifikasi Pemain --- */
-.player-notification {
-    /* Hapus position absolute dan terkaitnya jika ingin inline */
-    /* position: absolute; */
-    /* top: 0; left: 0; width: 100%; height: 100%; */
-    display: flex; /* Jadikan flex item */
-    justify-content: center;
+/* --- BARU: Container untuk notifikasi dan score-box --- */
+.header-right-items {
+    display: flex;
     align-items: center;
+    gap: 15px; /* Jarak antara notifikasi dan score-box */
+}
+
+/* Gaya Notifikasi Pemain */
+.player-notification {
     background-color: #212121; /* Latar belakang gelap untuk notifikasi */
     color: #FFEB3B; /* Warna teks kuning cerah */
     font-family: 'Oswald', sans-serif;
@@ -82,8 +81,7 @@ body {
     border-radius: 8px; /* Sudut membulat */
     opacity: 0; /* Dimulai tersembunyi */
     transition: opacity 0.5s ease-in-out;
-    pointer-events: none; /* Agar tidak menghalangi klik */
-    /* z-index: 10; */ /* Tidak perlu z-index tinggi jika inline */
+    /* pointer-events: none; */ /* Hapus jika ingin bisa dicopy, atau biarkan jika tidak */
     white-space: nowrap; /* Jangan pecah baris */
     overflow: hidden; /* Sembunyikan jika overflow */
     text-overflow: ellipsis; /* Tambah elipsis */
@@ -92,7 +90,6 @@ body {
 .player-notification.show {
     opacity: 1; /* Tampilkan notifikasi */
 }
-/* END NOTIFIKASI */
 
 .header-label {
     font-family: 'Oswald', sans-serif;
@@ -111,7 +108,6 @@ body {
     flex-direction: column;
     align-items: center;
     border: 1px solid #FF1744;
-    margin-left: auto; /* Dorong ke kanan */
     flex-shrink: 0; /* Pastikan tidak mengecil */
 }
 
@@ -174,9 +170,9 @@ body {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr; /* 2 kolom dengan lebar yang sama */
     gap: 15px;
-    max-width: 550px;
+    max-width: 550px; /* Batasi lebar keseluruhan daftar jawaban */
     width: 100%;
     height: auto;
 }
@@ -491,7 +487,7 @@ body {
     }
     /* Notifikasi dan pemenang responsif */
     .player-notification {
-        font-size: 2.8em;
+        font-size: 1.6em; /* Lebih kecil lagi */
     }
     .winner-title {
         font-size: 3.5em;
@@ -543,7 +539,7 @@ body {
     }
     /* Notifikasi dan pemenang responsif */
     .player-notification {
-        font-size: 2.2em;
+        font-size: 1.4em; /* Lebih kecil lagi */
     }
     .winner-title {
         font-size: 2.8em;
@@ -586,7 +582,8 @@ body {
     }
     /* Notifikasi dan pemenang responsif */
     .player-notification {
-        font-size: 1.8em;
+        font-size: 1.2em;
+        padding: 4px 10px; /* Padding lebih kecil */
     }
     .winner-title {
         font-size: 2em;
