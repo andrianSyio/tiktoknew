@@ -1,12 +1,3 @@
-Oke, Anda telah berhasil mendapatkan file JSON kunci akun layanan Firebase Anda\! Ini adalah langkah yang sangat penting.
-
-Sekarang, mari kita ubah kode `api/index.js` Anda untuk mengintegrasikan Firebase Admin SDK menggunakan kredensial ini.
-
-**Penting:** Saya akan menampilkan kode yang siap untuk **deployment di Vercel menggunakan Environment Variable**. Ini adalah cara yang **AMAN** karena Anda tidak akan mengunggah kunci pribadi langsung ke GitHub. Untuk pengujian lokal, Anda perlu mengatur Environment Variable secara manual di komputer Anda.
-
-### Kode `api/index.js` (Dengan Integrasi Firebase)
-
-```javascript
 // api/index.js
 const express = require('express');
 const cors = require('cors');
@@ -336,4 +327,3 @@ app.post('/api/reset-game', async (req, res) => {
 });
 
 module.exports = app;
-```
