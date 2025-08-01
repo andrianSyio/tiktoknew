@@ -7,12 +7,12 @@
     "start": "node index.js"
   },
   "keywords": [],
-  "author": "Your Name",
+  "author": "Wafaa",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "firebase-admin": "^11.11.0",
-    "socket.io": "^4.7.2" 
+    "socket.io": "^4.7.2"
   }
 }
