@@ -1,4 +1,4 @@
-// public/script.js - PERUBAHAN UTAMA UNTUK LOGIKA ACAR SOAL DAN KOTAK JAWABAN
+// public/script.js - HANYA PENYESUAIAN PENGAMBILAN DATA UNTUK 5 KOTAK JAWABAN
 
 const API_URL = '/api';
 
@@ -61,11 +61,8 @@ async function submitPlayerAnswer() {
             }
             updateLeaderboardDisplay();
 
-            // --- PENTING: Cek flag dari backend apakah sudah pindah soal ---
-            if (data.movedToNextQuestion || data.allAnswersRevealedForCurrentQuestion) {
-                 // Tidak perlu pesan terpisah jika backend sudah bilang pindah soal
-                 // Soal akan otomatis update saat fetchCurrentQuestion dipanggil
-            }
+            // Backend already handles moving to next question if all answers are revealed.
+            // Frontend just needs to fetch updated state.
 
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
@@ -94,27 +91,24 @@ async function fetchCurrentQuestion() {
         questionElement.innerText = data.question;
         totalScoreElement.innerText = data.score;
 
-        answersList.innerHTML = '';
-        // Buat item jawaban bahkan jika belum terungkap
-        // Ini memastikan jumlah kotak jawaban tetap konsisten
-        const currentSoal = await fetch(`${API_URL}/current-question`).then(res => res.json()); // Ambil ulang data soal lengkap untuk tahu berapa banyak kotak
-        currentSoal.answers.forEach((ansTemplate, index) => {
+        answersList.innerHTML = ''; // Kosongkan daftar jawaban sebelumnya
+        // --- PENTING: Pastikan selalu membuat 5 kotak jawaban ---
+        // Jika data.revealedAnswers kurang dari 5, sisa kotak akan menjadi placeholder
+        const numberOfAnswerSlots = 5;
+        for (let i = 0; i < numberOfAnswerSlots; i++) {
             const li = document.createElement('li');
             li.classList.add('answer-item');
-            
-            // Cari jawaban yang sesuai di data.revealedAnswers
-            const revealed = data.revealedAnswers.find(revealedAns => revealedAns.text.toLowerCase() === ansTemplate.text.toLowerCase());
 
-            if (revealed && revealed.isRevealed) {
+            const revealedAnswer = data.revealedAnswers[i]; // Ambil jawaban terungkap berdasarkan indeks
+
+            if (revealedAnswer && revealedAnswer.isRevealed) {
                 li.classList.add('revealed');
-                li.innerHTML = `<span class="answer-text">${revealed.text}</span><span class="answer-score">${revealed.score}</span>`;
+                li.innerHTML = `<span class="answer-text">${revealedAnswer.text}</span><span class="answer-score">${revealedAnswer.score}</span>`;
             } else {
-                // Tampilkan placeholder jika belum terungkap
-                // Anda bisa gunakan angka 1, 2, 3... atau garis
                 li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
             }
             answersList.appendChild(li);
-        });
+        }
 
     } catch (error) {
         console.error("Error fetching current question:", error);
@@ -132,7 +126,7 @@ async function nextQuestion() {
         const data = await response.json();
         if (data.success) {
             showMessage(data.message, 'success');
-            fetchCurrentQuestion(); // Fetch new question
+            fetchCurrentQuestion();
         } else {
             showMessage("Gagal pindah soal: " + data.message, 'error');
         }
@@ -151,9 +145,9 @@ async function resetGame() {
         const data = await response.json();
         if (data.success) {
             showMessage(data.message, 'success');
-            playerLeaderboard = []; // Reset leaderboard on frontend as well
+            playerLeaderboard = [];
             updateLeaderboardDisplay();
-            fetchCurrentQuestion(); // Fetch the first (newly shuffled) question
+            fetchCurrentQuestion();
         } else {
             showMessage("Gagal me-reset game: " + data.message, 'error');
         }
@@ -163,6 +157,7 @@ async function resetGame() {
     }
 }
 
+// Initial load
 document.addEventListener('DOMContentLoaded', () => {
     fetchCurrentQuestion();
     updateLeaderboardDisplay();
