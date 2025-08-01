@@ -3,37 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family 100 Live TikTok</title>
+    <title>Family 100 Live TV Display</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Family 100 Live</h1>
-
-        <div class="game-display">
-            <h2 id="question">Memuat pertanyaan...</h2>
-            <ul id="answers" class="answers-list">
-                </ul>
+    <div class="tv-container">
+        <div class="live-feed-placeholder">
+            <p>AREA LIVE VIDEO TIKTOK DI SINI</p>
         </div>
 
-        <div class="scores-section">
-            <div class="score-card total-score">
-                <h3>Total Skor</h3>
-                <span id="totalScore">0</span>
+        <div class="game-overlay">
+            <div class="question-area">
+                <span class="question-label">PERTANYAAN</span>
+                <h2 id="question" class="question-text">Memuat pertanyaan...</h2>
+            </div>
+
+            <div class="answers-area">
+                <ul id="answers" class="answers-list">
+                    </ul>
+            </div>
+
+            <div class="bottom-bar">
+                <div class="score-display">
+                    <span class="score-label">TOTAL SKOR</span>
+                    <span id="totalScore" class="score-value">0</span>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="admin-controls">
-            <h2>Kontrol Admin (Host)</h2>
-            <div class="input-group">
-                <input type="text" id="answerInput" placeholder="Masukkan Jawaban">
-                <button onclick="submitAnswer()">Submit Jawaban</button>
+    <div class="admin-panel">
+        <div class="container">
+            <h1>Kontrol Host Family 100</h1>
+            <div class="answer-submission">
+                <h3>Submit Jawaban Pemain</h3>
+                <div class="input-group-answer">
+                    <input type="text" id="playerNameInput" placeholder="Nama Pemain">
+                    <input type="text" id="answerInput" placeholder="Jawaban Pemain">
+                    <button onclick="submitPlayerAnswer()">Submit</button>
+                </div>
             </div>
             <div class="control-buttons">
                 <button onclick="nextQuestion()">Soal Berikutnya</button>
                 <button onclick="resetGame()">Reset Game</button>
             </div>
             <p id="message" class="message"></p>
+
+            <div class="leaderboard-section">
+                <h2>Leaderboard Pemain</h2>
+                <ul id="leaderboard" class="leaderboard-list">
+                    </ul>
+            </div>
         </div>
     </div>
 
