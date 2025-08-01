@@ -1,6 +1,7 @@
+<script>
 // public/script.js
 
-const API_URL = '/api';
+const API_URL = '/api'; // Tetap /api untuk Vercel deployment
 
 const questionElement = document.getElementById('question');
 const answersList = document.getElementById('answers');
@@ -19,7 +20,7 @@ const roundWinnerScore = document.getElementById('roundWinnerScore');
 const questionBox = document.getElementById('questionBox');
 const answersContainer = document.getElementById('answersContainer');
 
-let playerLeaderboard = []; // In-memory leaderboard data
+let playerLeaderboard = []; // In-memory leaderboard data (frontend saja)
 
 // Durasi tampilnya notifikasi dan layar pemenang (dalam milidetik)
 const NOTIFICATION_DURATION = 3000; // 3 detik
@@ -159,7 +160,6 @@ async function submitPlayerAnswer() {
 
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
-            // Jika jawaban salah, tetap perbarui tampilan jawaban (mungkin ada yang terungkap dari tebakan sebelumnya)
             renderAnswers(data.answers, data.revealedAnswers); // Perbarui juga jika salah, agar UI konsisten
         }
         answerInput.value = '';
@@ -185,7 +185,7 @@ async function fetchCurrentQuestion() {
         }
 
         questionElement.innerText = data.question;
-        totalScoreElement.innerText = data.score; // Update skor dari GET request
+        totalScoreElement.innerText = data.score;
 
         renderAnswers(data.answers, data.revealedAnswers); // Gunakan data dari GET request
 
@@ -258,3 +258,4 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchCurrentQuestion();
     updateLeaderboardDisplay();
 });
+</script>
