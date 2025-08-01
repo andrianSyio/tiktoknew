@@ -3,57 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family 100 Live TV Display</title>
+    <title>Family 100 Live Stream</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="tv-container">
-        <div class="live-feed-placeholder">
-            <p>AREA LIVE VIDEO TIKTOK DI SINI</p>
-        </div>
+    <div class="app-container">
+        <div class="game-display-area">
+            <div class="game-header">
+                <span class="header-label">FAMILY 100 LIVE</span>
+                <div class="score-box">
+                    <span>SKOR TOTAL</span>
+                    <span id="totalScore" class="score-value">0</span>
+                </div>
+            </div>
 
-        <div class="game-overlay">
-            <div class="question-area">
+            <div class="question-box">
                 <span class="question-label">PERTANYAAN</span>
                 <h2 id="question" class="question-text">Memuat pertanyaan...</h2>
             </div>
 
-            <div class="answers-area">
+            <div class="answers-container">
                 <ul id="answers" class="answers-list">
                     </ul>
             </div>
-
-            <div class="bottom-bar">
-                <div class="score-display">
-                    <span class="score-label">TOTAL SKOR</span>
-                    <span id="totalScore" class="score-value">0</span>
-                </div>
-            </div>
         </div>
-    </div>
 
-    <div class="admin-panel">
-        <div class="container">
-            <h1>Kontrol Host Family 100</h1>
-            <div class="answer-submission">
-                <h3>Submit Jawaban Pemain</h3>
-                <div class="input-group-answer">
-                    <input type="text" id="playerNameInput" placeholder="Nama Pemain">
-                    <input type="text" id="answerInput" placeholder="Jawaban Pemain">
-                    <button onclick="submitPlayerAnswer()">Submit</button>
+        <div class="admin-panel">
+            <div class="admin-header">
+                <h2>KONTROL HOST</h2>
+            </div>
+
+            <div class="admin-section">
+                <h3>SUBMIT JAWABAN</h3>
+                <div class="input-group">
+                    <input type="text" id="playerNameInput" placeholder="Nama Penjawab">
+                    <input type="text" id="answerInput" placeholder="Jawaban">
+                    <button onclick="submitPlayerAnswer()">Kirim Jawaban</button>
                 </div>
             </div>
-            <div class="control-buttons">
-                <button onclick="nextQuestion()">Soal Berikutnya</button>
-                <button onclick="resetGame()">Reset Game</button>
-            </div>
-            <p id="message" class="message"></p>
 
-            <div class="leaderboard-section">
-                <h2>Leaderboard Pemain</h2>
+            <div class="admin-section">
+                <h3>KONTROL GAME</h3>
+                <div class="control-buttons">
+                    <button onclick="nextQuestion()">Soal Berikutnya</button>
+                    <button onclick="resetGame()">RESET GAME</button>
+                </div>
+            </div>
+
+            <div class="admin-section leaderboard-section">
+                <h3>LEADERBOARD</h3>
                 <ul id="leaderboard" class="leaderboard-list">
                     </ul>
             </div>
+
+            <p id="message" class="message"></p>
         </div>
     </div>
 
