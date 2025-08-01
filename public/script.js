@@ -35,7 +35,7 @@ async function showMessage(msg, type = 'info', duration = 3000) {
 
 // Fungsi untuk menampilkan notifikasi pemain
 function showPlayerAnswerNotification(playerName, scoreAdded) {
-    playerNotification.textContent = `${playerName} MENDAPAT +${scoreAdded} POIN!`;
+    playerNotification.textContent = `${playerName} +${scoreAdded} PT!`; // Pesan lebih singkat
     playerNotification.classList.add('show');
     setTimeout(() => {
         playerNotification.classList.remove('show');
@@ -84,16 +84,18 @@ function showRoundWinnerScreen(finalScore, roundTopPlayer) {
 // Fungsi bantu untuk merender jawaban (digunakan oleh fetchCurrentQuestion dan submitPlayerAnswer)
 function renderAnswers(allAnswers, revealedAnswersData) {
     answersList.innerHTML = '';
-    const revealedAnswerTexts = new Set(revealedAnswersData.map(ans => ans.text.toLowerCase())); // Untuk pencarian cepat
+    // Buat Set dari teks jawaban yang sudah terungkap untuk pencarian cepat
+    const revealedAnswerTexts = new Set(revealedAnswersData.map(ans => ans.text.toLowerCase()));
 
-    const numberOfAnswerSlots = 5;
+    const numberOfAnswerSlots = 5; // Pastikan ini 5
+
     for (let i = 0; i < numberOfAnswerSlots; i++) {
         const li = document.createElement('li');
         li.classList.add('answer-item');
 
         const originalAnswerDefinition = allAnswers[i]; // Ambil definisi jawaban asli untuk slot ini
 
-        if (originalAnswerDefinition) {
+        if (originalAnswerDefinition) { // Pastikan ada jawaban untuk slot ini (misal kalau data.answers < 5)
             const isRevealed = revealedAnswerTexts.has(originalAnswerDefinition.text.toLowerCase());
 
             if (isRevealed) {
@@ -132,7 +134,7 @@ async function submitPlayerAnswer() {
         });
         const data = await response.json(); // Mengandung updated score, revealedAnswers, answers
 
-        // --- UPDATE TOTAL SKOR LANGSUNG DARI RESPON ---
+        // --- UPDATE TOTAL SKOR LANGSUNG DARI RESPON POST ---
         totalScoreElement.innerText = data.score;
 
         if (data.success) {
@@ -146,7 +148,7 @@ async function submitPlayerAnswer() {
             }
             updateLeaderboardDisplay();
 
-            // --- RENDER JAWABAN LANGSUNG DARI RESPON ---
+            // --- RENDER JAWABAN LANGSUNG DARI RESPON POST ---
             renderAnswers(data.answers, data.revealedAnswers); // Gunakan data dari respons POST
 
             if (data.allAnswersRevealedForCurrentQuestion) {
@@ -158,8 +160,7 @@ async function submitPlayerAnswer() {
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
             // Jika jawaban salah, tetap perbarui tampilan jawaban (mungkin ada yang terungkap dari tebakan sebelumnya)
-            // Atau cukup biarkan tampilan apa adanya jika Anda hanya ingin update pada jawaban benar.
-            // renderAnswers(data.answers, data.revealedAnswers); // Opsional: perbarui juga jika salah
+            renderAnswers(data.answers, data.revealedAnswers); // Perbarui juga jika salah, agar UI konsisten
         }
         answerInput.value = '';
     } catch (error) {
