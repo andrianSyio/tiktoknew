@@ -6,17 +6,19 @@
             {"text": "Kangguru", "score": 40},
             {"text": "Koala", "score": 30},
             {"text": "Oposum", "score": 20},
-            {"text": "Sugar Glider", "score": 10}
+            {"text": "Sugar Glider", "score": 10},
+            {"text": "Wombat", "score": 5}
         ]
     },
     {
         "id": 2,
         "question": "Apa yang dilakukan orang saat bangun tidur?",
         "answers": [
-            {"text": "Mandi", "score": 35},
+            {"text": "Mandi", "score": 40},
             {"text": "Sikat Gigi", "score": 30},
             {"text": "Sarapan", "score": 20},
-            {"text": "Minum Air", "score": 15}
+            {"text": "Minum Air", "score": 10},
+            {"text": "Mengecek HP", "score": 5}
         ]
     },
     {
@@ -26,7 +28,195 @@
             {"text": "Mie Instan", "score": 40},
             {"text": "Bakso", "score": 30},
             {"text": "Sop", "score": 20},
-            {"text": "Kopi", "score": 10}
+            {"text": "Nasi Goreng", "score": 10},
+            {"text": "Jagung Bakar", "score": 5}
+        ]
+    },
+    {
+        "id": 4,
+        "question": "Apa yang sering hilang di rumah?",
+        "answers": [
+            {"text": "Kunci", "score": 40},
+            {"text": "Remot TV", "score": 30},
+            {"text": "Pulpen", "score": 20},
+            {"text": "Kaus Kaki", "score": 10},
+            {"text": "Kacamata", "score": 5}
+        ]
+    },
+    {
+        "id": 5,
+        "question": "Pekerjaan yang berhubungan dengan makanan?",
+        "answers": [
+            {"text": "Koki", "score": 40},
+            {"text": "Pelayan", "score": 30},
+            {"text": "Petani", "score": 20},
+            {"text": "Penjual Makanan", "score": 10},
+            {"text": "Baker", "score": 5}
+        ]
+    },
+    {
+        "id": 6,
+        "question": "Benda yang ada di kamar mandi?",
+        "answers": [
+            {"text": "Sikat Gigi", "score": 40},
+            {"text": "Sabun", "score": 30},
+            {"text": "Handuk", "score": 20},
+            {"text": "Pasta Gigi", "score": 10},
+            {"text": "Shampo", "score": 5}
+        ]
+    },
+    {
+        "id": 7,
+        "question": "Bagian tubuh yang ada dua?",
+        "answers": [
+            {"text": "Mata", "score": 40},
+            {"text": "Tangan", "score": 30},
+            {"text": "Kaki", "score": 20},
+            {"text": "Telinga", "score": 10},
+            {"text": "Lubang Hidung", "score": 5}
+        ]
+    },
+    {
+        "id": 8,
+        "question": "Sesuatu yang panas?",
+        "answers": [
+            {"text": "Api", "score": 40},
+            {"text": "Matahari", "score": 30},
+            {"text": "Kopi Panas", "score": 20},
+            {"text": "Setrika", "score": 10},
+            {"text": "Lava", "score": 5}
+        ]
+    },
+    {
+        "id": 9,
+        "question": "Buah yang berwarna merah?",
+        "answers": [
+            {"text": "Apel", "score": 40},
+            {"text": "Stroberi", "score": 30},
+            {"text": "Semangka", "score": 20},
+            {"text": "Ceri", "score": 10},
+            {"text": "Buah Naga", "score": 5}
+        ]
+    },
+    {
+        "id": 10,
+        "question": "Apa yang sering dibawa siswa ke sekolah?",
+        "answers": [
+            {"text": "Tas", "score": 40},
+            {"text": "Buku", "score": 30},
+            {"text": "Pulpen", "score": 20},
+            {"text": "Pensil", "score": 10},
+            {"text": "Bekal Makanan", "score": 5}
+        ]
+    },
+    {
+        "id": 11,
+        "question": "Kata yang sering diucapkan saat berpisah?",
+        "answers": [
+            {"text": "Dadah", "score": 40},
+            {"text": "Sampai Jumpa", "score": 30},
+            {"text": "Selamat Tinggal", "score": 20},
+            {"text": "Bye", "score": 10},
+            {"text": "See You", "score": 5}
+        ]
+    },
+    {
+        "id": 12,
+        "question": "Profesi yang memakai seragam putih?",
+        "answers": [
+            {"text": "Dokter", "score": 40},
+            {"text": "Perawat", "score": 30},
+            {"text": "Koki", "score": 20},
+            {"text": "Tukang Roti", "score": 10},
+            {"text": "Farmasi", "score": 5}
+        ]
+    },
+    {
+        "id": 13,
+        "question": "Sesuatu yang bisa direntangkan?",
+        "answers": [
+            {"text": "Karet", "score": 40},
+            {"text": "Tali", "score": 30},
+            {"text": "Pakaian", "score": 20},
+            {"text": "Per", "score": 10},
+            {"text": "Lengan", "score": 5}
+        ]
+    },
+    {
+        "id": 14,
+        "question": "Olahraga yang menggunakan bola?",
+        "answers": [
+            {"text": "Sepak Bola", "score": 40},
+            {"text": "Basket", "score": 30},
+            {"text": "Voli", "score": 20},
+            {"text": "Tenis", "score": 10},
+            {"text": "Bulu Tangkis", "score": 5}
+        ]
+    },
+    {
+        "id": 15,
+        "question": "Benda yang ditemukan di kamar tidur?",
+        "answers": [
+            {"text": "Bantal", "score": 40},
+            {"text": "Guling", "score": 30},
+            {"text": "Selimut", "score": 20},
+            {"text": "Lampu Tidur", "score": 10},
+            {"text": "Meja Nakas", "score": 5}
+        ]
+    },
+    {
+        "id": 16,
+        "question": "Tempat untuk membeli barang?",
+        "answers": [
+            {"text": "Pasar", "score": 40},
+            {"text": "Supermarket", "score": 30},
+            {"text": "Toko", "score": 20},
+            {"text": "Mall", "score": 10},
+            {"text": "Minimarket", "score": 5}
+        ]
+    },
+    {
+        "id": 17,
+        "question": "Hewan peliharaan yang populer?",
+        "answers": [
+            {"text": "Kucing", "score": 40},
+            {"text": "Anjing", "score": 30},
+            {"text": "Burung", "score": 20},
+            {"text": "Ikan", "score": 10},
+            {"text": "Hamster", "score": 5}
+        ]
+    },
+    {
+        "id": 18,
+        "question": "Apa yang dilakukan saat ulang tahun?",
+        "answers": [
+            {"text": "Tiup Lilin", "score": 40},
+            {"text": "Makan Kue", "score": 30},
+            {"text": "Dapat Kado", "score": 20},
+            {"text": "Pesta", "score": 10},
+            {"text": "Potong Kue", "score": 5}
+        ]
+    },
+    {
+        "id": 19,
+        "question": "Sesuatu yang berbau harum?",
+        "answers": [
+            {"text": "Bunga", "score": 40},
+            {"text": "Parfum", "score": 30},
+            {"text": "Sabun", "score": 20},
+            {"text": "Kopi", "score": 10},
+            {"text": "Masakan", "score": 5}
+        ]
+    },
+    {
+        "id": 20,
+        "question": "Benda yang ada di jalan raya?",
+        "answers": [
+            {"text": "Mobil", "score": 40},
+            {"text": "Motor", "score": 30},
+            {"text": "Rambu Lalu Lintas", "score": 20},
+            {"text": "Lampu Merah", "score": 10},
+            {"text": "Trotoar", "score": 5}
         ]
     }
 ]
