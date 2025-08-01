@@ -1,9 +1,14 @@
-/* public/style.css - PERUBAHAN UTAMA DI SINI UNTUK KOTAK JAWABAN */
+/* public/style.css */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&display=swap');
+
 
 /* General Body and Main Container */
 body {
-    font-family: 'Inter', 'Arial Black', sans-serif;
-    background-color: #1a1a2e;
+    font-family: 'Montserrat', sans-serif; /* Modern, clean font */
+    background-color: #121212; /* Deep dark background */
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -11,29 +16,31 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #f0f0f0;
+    color: #e0e0e0; /* Light gray text */
 }
 
 .app-container {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #1a1a2e;
+    background-color: #121212;
 }
 
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
-    flex: 3;
-    background-color: #000;
+    flex: 3; /* Takes 70% of the width */
+    background: linear-gradient(135deg, #1f1f1f, #0a0a0a); /* Smooth dark gradient */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 30px;
+    padding: 40px; /* Increased padding for more breathing room */
     box-sizing: border-box;
     position: relative;
+    /* Optional: subtle border for definition */
+    border-right: 2px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Optional: Placeholder for actual live video feed */
+/* Optional: Overlay for live video (if OBS is configured) */
 .game-display-area::before {
     content: '';
     position: absolute;
@@ -41,8 +48,10 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=YOUR+LIVE+VIDEO+FEED+HERE') no-repeat center center / cover;
-    opacity: 0.5;
+    /* This can be a placeholder image or a solid color.
+       In OBS, you'd place your video source *under* this browser source
+       and configure the browser source to have a transparent background if needed. */
+    background-color: rgba(0, 0, 0, 0.4); /* Subtle transparent overlay */
     z-index: 0;
 }
 
@@ -50,78 +59,87 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-    margin-bottom: 20px;
+    padding-bottom: 25px; /* More space */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1); /* Softer separator */
+    margin-bottom: 30px;
     z-index: 1;
 }
 
 .header-label {
-    font-size: 2.5em;
-    font-weight: 800;
-    color: #00ffff;
-    letter-spacing: 3px;
+    font-family: 'Oswald', sans-serif; /* Bolder, condensed font for headers */
+    font-size: 3em; /* Larger, impactful */
+    font-weight: 700;
+    color: #4CAF50; /* Fresh green */
+    letter-spacing: 4px;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.5); /* Subtle glow */
 }
 
 .score-box {
-    background-color: rgba(255, 0, 0, 0.8);
-    padding: 10px 25px;
+    background-color: #212121; /* Darker background for score */
+    padding: 12px 30px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); /* Red glow */
+    border: 1px solid #D32F2F; /* Red border */
 }
 
 .score-box span {
-    font-size: 0.9em;
+    font-size: 1em;
     font-weight: 600;
-    color: #fff;
+    color: #bdbdbd; /* Lighter gray for label */
     text-transform: uppercase;
 }
 
 .score-value {
-    font-size: 2.8em;
-    font-weight: 900;
-    color: #ffeb3b;
+    font-family: 'Oswald', sans-serif;
+    font-size: 3.5em; /* Very large for impact */
+    font-weight: 700;
+    color: #FFEB3B; /* Bright yellow */
     line-height: 1;
+    text-shadow: 0 0 15px rgba(255, 235, 59, 0.6);
 }
 
 .question-box {
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 25px 30px;
+    background-color: rgba(33, 33, 33, 0.8); /* Slightly transparent dark grey */
+    padding: 30px 40px;
     border-radius: 15px;
-    margin-bottom: 30px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    margin-bottom: 40px; /* More space */
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.3); /* Cyan glow */
+    border: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 1;
 }
 
 .question-label {
+    font-family: 'Oswald', sans-serif;
     display: block;
-    font-size: 1.2em;
-    font-weight: 700;
-    color: #00ffff;
-    margin-bottom: 10px;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #00BCD4; /* Cyan */
+    margin-bottom: 15px;
     text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .question-text {
-    font-size: 3.5em;
-    font-weight: 900;
+    font-family: 'Oswald', sans-serif;
+    font-size: 4.5em; /* EVEN LARGER for max impact */
+    font-weight: 700;
     color: #fff;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.1;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
 }
 
 .answers-container {
     flex-grow: 1;
-    /* --- PENTING: HAPUS `overflow-y: auto;` untuk menghilangkan scroll --- */
-    padding-right: 0; /* Hapus padding jika tidak ada scrollbar */
-    display: flex; /* Gunakan flexbox untuk mengatur item jawaban */
-    justify-content: center; /* Pusatkan jawaban secara horizontal */
-    align-items: center; /* Pusatkan jawaban secara vertikal */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align answers to the top if fewer than 5 */
     z-index: 1;
+    padding-bottom: 20px; /* Ensure space at bottom */
 }
 
 .answers-list {
@@ -130,34 +148,34 @@ body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Jarak antar item jawaban */
-    width: 100%; /* Agar ul mengambil lebar penuh container */
-    max-width: 600px; /* Batasi lebar daftar jawaban agar tidak terlalu lebar di layar besar */
+    gap: 15px; /* Space between answers */
+    width: 100%;
+    max-width: 700px; /* A bit wider for better readability */
 }
 
 .answer-item {
-    background-color: rgba(50, 50, 50, 0.8);
-    padding: 18px 30px;
+    background-color: #212121; /* Dark grey */
+    padding: 20px 35px; /* More padding */
     border-radius: 12px;
-    font-size: 2.2em;
+    font-size: 2.5em; /* Larger font for answers */
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #444;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    color: #fff;
-    height: 60px; /* Tinggi tetap untuk setiap kotak jawaban */
-    box-sizing: border-box; /* Pastikan padding dan border masuk perhitungan tinggi */
+    border: 2px solid #424242; /* Subtle dark border */
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #e0e0e0;
+    height: 70px; /* Fixed height for 5 boxes */
+    box-sizing: border-box;
 }
 
 .answer-item.revealed {
-    background-color: rgba(40, 167, 69, 0.9);
-    border-color: #28a745;
+    background-color: #4CAF50; /* Vibrant green */
+    border-color: #81C784; /* Lighter green border */
     color: #fff;
     font-weight: 700;
-    box-shadow: 0 0 25px rgba(40, 167, 69, 0.7);
+    box-shadow: 0 5px 25px rgba(76, 175, 80, 0.7); /* Stronger green glow */
 }
 
 .answer-text {
@@ -169,28 +187,29 @@ body {
 }
 
 .answer-score {
-    margin-left: 20px;
+    margin-left: 25px; /* More space */
     font-weight: 800;
-    color: #ffeb3b;
+    color: #FFEB3B; /* Bright yellow */
     font-size: 0.9em;
+    text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
 }
 
 .answers-list .placeholder {
-    color: #bbb;
+    color: #9e9e9e; /* Lighter gray for placeholder */
     font-style: italic;
 }
 
 
 /* --- Admin Panel (Right Column, for Host Use) --- */
 .admin-panel {
-    flex: 1;
-    background-color: #2c3e50;
+    flex: 1; /* Takes 30% of the width */
+    background-color: #263238; /* Dark blue-gray, subtle */
     padding: 30px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    border-left: 5px solid #3498db;
+    gap: 30px; /* Increased gap */
+    border-left: 5px solid #3F51B5; /* Blue accent border */
     overflow-y: auto;
 }
 
@@ -201,92 +220,106 @@ body {
 }
 
 .admin-header h2 {
-    font-size: 1.8em;
-    color: #3498db;
+    font-family: 'Oswald', sans-serif;
+    font-size: 2em;
+    color: #3F51B5; /* Deep blue */
     margin: 0;
     font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .admin-section {
-    background-color: #34495e;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background-color: #37474F; /* Slightly lighter background for sections */
+    padding: 25px; /* More padding */
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .admin-section h3 {
-    font-size: 1.3em;
-    color: #f1c40f;
+    font-size: 1.4em;
+    color: #FFC107; /* Amber for section titles */
     margin-top: 0;
-    margin-bottom: 15px;
-    font-weight: 600;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px; /* More space */
 }
 
 .input-group input {
-    padding: 12px;
+    padding: 15px;
     border: 1px solid #555;
     border-radius: 8px;
-    background-color: #446078;
+    background-color: #424242; /* Darker input background */
     color: #fff;
-    font-size: 1em;
-    transition: border-color 0.3s ease;
+    font-size: 1.1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-group input:focus {
-    border-color: #3498db;
+    border-color: #3F51B5;
+    box-shadow: 0 0 10px rgba(63, 81, 181, 0.5);
     outline: none;
 }
 
 .input-group input::placeholder {
-    color: #bbb;
+    color: #bdbdbd;
 }
 
 .input-group button {
-    padding: 12px 20px;
-    background-color: #2ecc71;
+    padding: 15px 25px;
+    background-color: #4CAF50; /* Green submit button */
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .input-group button:hover {
-    background-color: #27ae60;
+    background-color: #43A047;
+    transform: translateY(-2px);
 }
+.input-group button:active {
+    transform: translateY(0);
+}
+
 
 .control-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
 
 .control-buttons button {
-    padding: 12px 20px;
-    background-color: #e67e22;
+    padding: 15px 25px;
+    background-color: #FF5722; /* Deep orange control buttons */
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .control-buttons button:hover {
-    background-color: #d35400;
+    background-color: #F4511E;
+    transform: translateY(-2px);
+}
+.control-buttons button:active {
+    transform: translateY(0);
 }
 
 .leaderboard-section {
-    background-color: #34495e;
+    background-color: #37474F; /* Same background as other admin sections */
 }
 
 .leaderboard-list {
@@ -298,8 +331,8 @@ body {
 .leaderboard-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1); /* Lighter dashed line */
     font-size: 1.1em;
 }
 
@@ -309,19 +342,19 @@ body {
 
 .leaderboard-item span:first-child {
     font-weight: 600;
-    color: #ecf0f1;
+    color: #e0e0e0;
 }
 
 .leaderboard-item span:last-child {
     font-weight: 700;
-    color: #ffeb3b;
+    color: #FFEB3B; /* Yellow for leaderboard scores */
 }
 
 .message {
     text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 25px;
     font-weight: bold;
     display: none;
 }
@@ -345,7 +378,17 @@ body {
     color: #856404;
 }
 
+
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+    .game-display-area {
+        flex: 2; /* Adjust flex ratio */
+    }
+    .admin-panel {
+        flex: 1;
+    }
+}
+
 @media (max-width: 900px) {
     .app-container {
         flex-direction: column;
@@ -355,56 +398,62 @@ body {
     .game-display-area {
         height: 70vh;
         width: 100%;
-        padding: 20px;
+        padding: 30px;
     }
     .admin-panel {
         width: 100%;
         border-left: none;
-        border-top: 5px solid #3498db;
-        padding: 20px;
+        border-top: 5px solid #3F51B5;
+        padding: 30px;
     }
     .game-header, .question-box, .answers-container {
-        padding: 15px;
+        padding: 20px;
     }
     .question-text {
-        font-size: 2.5em;
+        font-size: 3em;
     }
     .answer-item {
-        font-size: 1.8em;
-        padding: 15px 20px;
-        height: 50px; /* Adjust height for smaller screens */
+        font-size: 2em;
+        padding: 15px 25px;
+        height: 60px;
     }
     .header-label {
-        font-size: 1.8em;
+        font-size: 2.2em;
     }
     .score-value {
-        font-size: 2.2em;
+        font-size: 2.8em;
+    }
+    .admin-panel h2 {
+        font-size: 1.6em;
     }
 }
 
 @media (max-width: 600px) {
     .game-display-area {
-        padding: 15px;
+        padding: 20px;
     }
     .question-text {
-        font-size: 1.8em;
+        font-size: 2.2em;
     }
     .answer-item {
-        font-size: 1.4em;
-        padding: 10px 15px;
-        height: 45px; /* Further adjust height */
+        font-size: 1.6em;
+        padding: 12px 20px;
+        height: 55px;
     }
     .header-label {
-        font-size: 1.4em;
+        font-size: 1.6em;
     }
     .score-value {
-        font-size: 1.8em;
+        font-size: 2.2em;
     }
     .admin-panel {
-        padding: 15px;
+        padding: 20px;
     }
     .input-group input, .input-group button, .control-buttons button {
         font-size: 0.9em;
-        padding: 10px;
+        padding: 12px;
+    }
+    .admin-section h3 {
+        font-size: 1.2em;
     }
 }
