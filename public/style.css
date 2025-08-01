@@ -7,8 +7,8 @@
 
 /* General Body and Main Container */
 body {
-    font-family: 'Montserrat', sans-serif; /* Modern, clean font */
-    background-color: #000000; /* Pure black background untuk di luar area game display */
+    font-family: 'Montserrat', sans-serif;
+    background-color: #000000;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -16,27 +16,27 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #e0e0e0; /* Light gray text default */
+    color: #e0e0e0;
 }
 
 .app-container {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #000000; /* Consistent pure black background */
+    background-color: #000000;
 }
 
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
-    flex: 3; /* Takes 70% of the width */
-    background-color: #FFFFFF; /* Putih bersih */
+    flex: 3;
+    background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 40px; /* Increased padding for more breathing room */
+    padding: 40px;
     box-sizing: border-box;
     position: relative;
-    border-right: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
+    border-right: 2px solid #E0E0E0;
 }
 
 /* Optional: Overlay for live video (if OBS is configured) */
@@ -47,7 +47,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0); /* Sepenuhnya transparan */
+    background-color: rgba(255, 255, 255, 0);
     z-index: 0;
 }
 
@@ -56,10 +56,10 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 25px;
-    border-bottom: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
+    border-bottom: 2px solid #E0E0E0;
     margin-bottom: 30px;
     z-index: 1;
-    position: relative; /* Penting untuk posisi overlay notifikasi pemain */
+    position: relative;
 }
 
 /* Gaya Notifikasi Pemain */
@@ -72,21 +72,21 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.9); /* Latar belakang gelap untuk notifikasi */
-    color: #FFEB3B; /* Warna teks kuning cerah */
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #FFEB3B;
     font-family: 'Oswald', sans-serif;
-    font-size: 3.5em; /* Ukuran besar */
+    font-size: 3.5em;
     font-weight: 700;
     letter-spacing: 2px;
-    opacity: 0; /* Dimulai tersembunyi */
+    opacity: 0;
     transition: opacity 0.5s ease-in-out;
-    pointer-events: none; /* Agar tidak menghalangi klik */
-    z-index: 10; /* Pastikan di atas elemen header lainnya */
+    pointer-events: none;
+    z-index: 10;
     border-radius: 10px;
 }
 
 .player-notification.show {
-    opacity: 1; /* Tampilkan notifikasi */
+    opacity: 1;
 }
 
 .header-label {
@@ -145,7 +145,7 @@ body {
 
 .question-text {
     font-family: 'Oswald', sans-serif;
-    font-size: 2.8em; /* Ukuran font pertanyaan */
+    font-size: 2.8em;
     font-weight: 700;
     color: #212121;
     margin: 0;
@@ -156,7 +156,7 @@ body {
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    align-items: center; /* Memusatkan vertikal */
+    align-items: center;
     z-index: 1;
     padding-bottom: 20px;
 }
@@ -166,48 +166,46 @@ body {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 kolom dengan lebar yang sama */
+    grid-template-columns: 1fr 1fr; /* Selalu 2 kolom */
     gap: 15px; /* Jarak antar kotak */
     max-width: 550px; /* Batasi lebar keseluruhan daftar jawaban */
     width: 100%; /* Ambil 100% dari max-width */
     height: auto; /* Biarkan grid menghitung tingginya */
-    /* Opsional: Untuk menjaga tinggi total konstan jika mau, tapi auto lebih fleksibel */
-    /* height: calc((70px * 3) + (15px * 2)); // 3 baris: (tinggi item * 3) + (gap * 2) */
 }
 
 .answer-item {
-    background-color: #FFFFFF; /* Putih bersih */
-    padding: 20px 25px; /* Padding disesuaikan */
+    background-color: #FFFFFF;
+    padding: 20px 25px;
     border-radius: 12px;
-    font-size: 2.5em; /* Font tetap besar */
+    font-size: 2.5em;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #212121; /* Border hitam gelap agar sangat terlihat di background putih */
+    border: 2px solid #212121;
     transition: all 0.3s ease-in-out;
-    color: #212121; /* Hitam gelap untuk teks jawaban */
+    color: #212121;
     height: 70px; /* Tinggi tetap untuk setiap kotak */
-    box-sizing: border-box; /* Pastikan padding dan border masuk perhitungan tinggi */
+    box-sizing: border-box;
 }
 
-/* Aturan Grid untuk Layout 1-2-2 */
+/* --- ATURAN GRID UNTUK 5 KOTAK (1-2-2 LAYOUT) --- */
 .answers-list li:nth-child(1) {
-    grid-column: span 2; /* Kotak pertama ambil 2 kolom */
+    grid-column: span 2; /* Kotak pertama ambil 2 kolom (100% lebar) */
 }
 
 .answers-list li:nth-child(2),
 .answers-list li:nth-child(3),
 .answers-list li:nth-child(4),
 .answers-list li:nth-child(5) {
-    grid-column: span 1; /* Kotak sisanya ambil 1 kolom */
+    grid-column: span 1; /* Kotak sisanya ambil 1 kolom (50% lebar) */
 }
 
 
 .answer-item.revealed {
-    background-color: #4CAF50; /* Hijau terang saat terungkap */
-    border-color: #81C784; /* Border hijau lebih terang */
-    color: #fff; /* Teks putih saat terungkap */
+    background-color: #4CAF50;
+    border-color: #81C784;
+    color: #fff;
     font-weight: 700;
 }
 
