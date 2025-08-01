@@ -7,8 +7,8 @@
 
 /* General Body and Main Container */
 body {
-    font-family: 'Montserrat', sans-serif; /* Modern, clean font */
-    background-color: #000000; /* Pure black background untuk di luar area game display */
+    font-family: 'Montserrat', sans-serif;
+    background-color: #000000;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -16,27 +16,27 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #e0e0e0; /* Light gray text default */
+    color: #e0e0e0;
 }
 
 .app-container {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #000000; /* Consistent pure black background */
+    background-color: #000000;
 }
 
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
-    flex: 3; /* Takes 70% of the width */
-    background-color: #FFFFFF; /* Putih bersih */
+    flex: 3;
+    background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 40px; /* Increased padding for more breathing room */
+    padding: 40px;
     box-sizing: border-box;
     position: relative;
-    border-right: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
+    border-right: 2px solid #E0E0E0;
 }
 
 /* Optional: Overlay for live video (if OBS is configured) */
@@ -47,7 +47,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0); /* Sepenuhnya transparan */
+    background-color: rgba(255, 255, 255, 0);
     z-index: 0;
 }
 
@@ -56,33 +56,33 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 25px;
-    border-bottom: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
+    border-bottom: 2px solid #E0E0E0;
     margin-bottom: 30px;
-    z-index: 1; /* Above placeholder */
+    z-index: 1;
 }
 
 .header-label {
     font-family: 'Oswald', sans-serif;
     font-size: 3em;
     font-weight: 700;
-    color: #4CAF50; /* Fresh green */
+    color: #4CAF50;
     letter-spacing: 3px;
 }
 
 .score-box {
-    background-color: #F5F5F5; /* Abu-abu terang untuk kotak skor */
+    background-color: #F5F5F5;
     padding: 12px 30px;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 1px solid #FF1744; /* Bright red border */
+    border: 1px solid #FF1744;
 }
 
 .score-box span {
     font-size: 1em;
     font-weight: 600;
-    color: #757575; /* Darker gray for label on white background */
+    color: #757575;
     text-transform: uppercase;
 }
 
@@ -90,17 +90,17 @@ body {
     font-family: 'Oswald', sans-serif;
     font-size: 3.5em;
     font-weight: 700;
-    color: #D32F2F; /* Merah gelap untuk nilai skor */
+    color: #D32F2F;
     line-height: 1;
 }
 
 .question-box {
     text-align: center;
-    background-color: #F5F5F5; /* Abu-abu terang untuk kotak pertanyaan */
+    background-color: #F5F5F5;
     padding: 30px 40px;
     border-radius: 15px;
     margin-bottom: 40px;
-    border: 1px solid #2196F3; /* Biru terang untuk border pertanyaan */
+    border: 1px solid #2196F3;
     z-index: 1;
 }
 
@@ -109,18 +109,17 @@ body {
     display: block;
     font-size: 1.4em;
     font-weight: 600;
-    color: #2196F3; /* Biru terang untuk label pertanyaan */
+    color: #2196F3;
     margin-bottom: 15px;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 .question-text {
-    /* --- PERUBAHAN DI SINI: Ukuran font pertanyaan lebih kecil --- */
     font-family: 'Oswald', sans-serif;
-    font-size: 2.8em; /* Dikurangi lagi dari 3.2em */
+    font-size: 2.8em;
     font-weight: 700;
-    color: #212121; /* Hitam gelap untuk teks pertanyaan */
+    color: #212121;
     margin: 0;
     line-height: 1.1;
 }
@@ -128,8 +127,8 @@ body {
 .answers-container {
     flex-grow: 1;
     display: flex;
-    justify-content: center; /* Pusatkan horizontal */
-    align-items: center; /* Pusatkan vertikal */
+    justify-content: center;
+    align-items: center;
     z-index: 1;
     padding-bottom: 20px;
 }
@@ -138,52 +137,52 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid; /* --- PENTING: Gunakan CSS Grid --- */
-    grid-template-columns: 1fr 1fr; /* 2 kolom dengan lebar yang sama */
-    gap: 15px; /* Jarak antar kotak, disesuaikan */
-    width: 100%;
-    max-width: 800px; /* Lebar maksimal untuk daftar jawaban */
-    /* Tinggi total container answers-list:
-       Untuk 3 baris: (tinggi item * 3) + (gap * 2)
-       Contoh: (70px * 3) + (15px * 2) = 210px + 30px = 240px.
-       Atau bisa atur auto dan biarkan grid menghitung. */
-    /* height: auto; Biarkan grid menghitung tingginya */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px; /* Jarak antar kotak */
+    /* --- PERUBAHAN DI SINI: Max-width yang lebih kecil --- */
+    max-width: 550px; /* Dikurangi dari 700px */
+    width: 100%; /* Pastikan mengambil 100% dari max-width-nya */
+    height: calc((70px * 5) + (15px * 4)); /* Tinggi 5 kotak + 4 celah (gap) */
+    /* Sesuaikan height jika gap diubah */
 }
 
 .answer-item {
-    background-color: #FFFFFF; /* Putih bersih untuk kotak jawaban */
-    padding: 20px; /* Padding disesuaikan */
+    background-color: #FFFFFF;
+    /* --- PERUBAHAN DI SINI: Padding horizontal dikurangi --- */
+    padding: 20px 25px; /* Dikurangi dari 35px */
     border-radius: 12px;
-    font-size: 2.2em; /* Font tetap besar */
+    font-size: 2.5em;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #212121; /* Border hitam gelap agar sangat terlihat di background putih */
+    border: 2px solid #212121;
     transition: all 0.3s ease-in-out;
-    color: #212121; /* Hitam gelap untuk teks jawaban */
-    height: 70px; /* Tinggi tetap untuk setiap kotak */
-    box-sizing: border-box; /* Pastikan padding dan border masuk perhitungan tinggi */
+    color: #212121;
+    height: 70px;
+    box-sizing: border-box;
+    /* --- Opsional: Sesuaikan font-size jika teks masih terlalu panjang --- */
+    /* font-size: 2.3em; */
 }
 
-/* --- PENTING: Aturan Grid untuk Layout 1-2-2 --- */
+/* Aturan Grid untuk Layout 1-2-2 */
 .answers-list li:nth-child(1) {
-    grid-column: span 2; /* Kotak pertama ambil 2 kolom (membuat 1 di atas) */
+    grid-column: span 2;
 }
 
 .answers-list li:nth-child(2),
 .answers-list li:nth-child(3),
 .answers-list li:nth-child(4),
 .answers-list li:nth-child(5) {
-    grid-column: span 1; /* Kotak sisanya ambil 1 kolom */
+    grid-column: span 1;
 }
-/* Pastikan script.js selalu merender 5 <li> */
 
 
 .answer-item.revealed {
-    background-color: #4CAF50; /* Hijau terang saat terungkap */
-    border-color: #81C784; /* Border hijau lebih terang */
-    color: #fff; /* Teks putih saat terungkap */
+    background-color: #4CAF50;
+    border-color: #81C784;
+    color: #fff;
     font-weight: 700;
 }
 
@@ -198,20 +197,20 @@ body {
 .answer-score {
     margin-left: 25px;
     font-weight: 800;
-    color: #FFEA00; /* Kuning terang untuk skor */
+    color: #FFEA00;
     font-size: 0.9em;
 }
 
 .answers-list .placeholder {
-    color: #9E9E9E; /* Abu-abu sedang untuk placeholder */
+    color: #9E9E9E;
     font-style: italic;
 }
 
 
 /* --- Admin Panel (Right Column, for Host Use) --- */
 .admin-panel {
-    flex: 1; /* Takes 30% of the width */
-    background-color: #212121; /* Tetap gelap untuk panel admin */
+    flex: 1;
+    background-color: #212121;
     padding: 30px;
     box-sizing: border-box;
     display: flex;
@@ -409,17 +408,17 @@ body {
     .admin-panel {
         width: 100%;
         border-left: none;
-        border-top: 5px solid #424242; /* Adjusted border for stacking */
+        border-top: 5px solid #424242;
         padding: 30px;
     }
     .game-header, .question-box, .answers-container {
         padding: 20px;
     }
     .question-text {
-        font-size: 2.5em; /* Adjusted for smaller screens */
+        font-size: 2.5em;
     }
     .answers-list {
-        gap: 10px; /* Adjust gap for smaller screens */
+        gap: 10px;
     }
     .answer-item {
         font-size: 1.8em;
@@ -442,10 +441,10 @@ body {
         padding: 20px;
     }
     .question-text {
-        font-size: 2.0em; /* Further adjusted for very small screens */
+        font-size: 2.0em;
     }
     .answers-list {
-        gap: 8px; /* Even smaller gap for tiny screens */
+        gap: 8px;
     }
     .answer-item {
         font-size: 1.6em;
