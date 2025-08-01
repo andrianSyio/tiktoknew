@@ -1,4 +1,5 @@
-// public/script.js
+// public/script.js - PERUBAHAN UTAMA UNTUK LOGIKA ACAR SOAL DAN KOTAK JAWABAN
+
 const API_URL = '/api';
 
 const questionElement = document.getElementById('question');
@@ -6,13 +7,11 @@ const answersList = document.getElementById('answers');
 const totalScoreElement = document.getElementById('totalScore');
 const messageElement = document.getElementById('message');
 
-// New elements for player input and leaderboard
 const playerNameInput = document.getElementById('playerNameInput');
 const answerInput = document.getElementById('answerInput');
 const leaderboardElement = document.getElementById('leaderboard');
 
-// In-memory leaderboard data (simple for now, will reset on server restart)
-let playerLeaderboard = [];
+let playerLeaderboard = []; // In-memory leaderboard data
 
 async function showMessage(msg, type = 'info', duration = 3000) {
     messageElement.textContent = msg;
@@ -22,10 +21,9 @@ async function showMessage(msg, type = 'info', duration = 3000) {
     }, duration);
 }
 
-// Function to update the displayed leaderboard
 function updateLeaderboardDisplay() {
-    leaderboardElement.innerHTML = ''; // Clear existing list
-    playerLeaderboard.sort((a, b) => b.score - a.score); // Sort by score descending
+    leaderboardElement.innerHTML = '';
+    playerLeaderboard.sort((a, b) => b.score - a.score);
 
     playerLeaderboard.forEach(player => {
         const listItem = document.createElement('li');
@@ -35,7 +33,6 @@ function updateLeaderboardDisplay() {
     });
 }
 
-// Function to handle player answer submission from admin panel
 async function submitPlayerAnswer() {
     const playerName = playerNameInput.value.trim();
     const answer = answerInput.value.trim();
@@ -46,34 +43,35 @@ async function submitPlayerAnswer() {
     }
 
     try {
-        // First, submit the answer to the game logic
         const response = await fetch(`${API_URL}/submit-answer`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ answer }) // Only sending 'answer'
+            body: JSON.stringify({ answer })
         });
         const data = await response.json();
 
         if (data.success) {
             showMessage(`${data.answerRevealed} benar! (+${data.scoreAdded} poin)`, 'success');
-            // Update player's score in leaderboard data
+
             let player = playerLeaderboard.find(p => p.name.toLowerCase() === playerName.toLowerCase());
             if (player) {
                 player.score += data.scoreAdded;
             } else {
                 playerLeaderboard.push({ name: playerName, score: data.scoreAdded });
             }
-            updateLeaderboardDisplay(); // Refresh leaderboard display
+            updateLeaderboardDisplay();
 
-            if (data.allAnswersRevealedForCurrentQuestion) {
-                showMessage("Semua jawaban untuk soal ini sudah terungkap! Tekan 'Soal Berikutnya'.", 'info', 7000);
+            // --- PENTING: Cek flag dari backend apakah sudah pindah soal ---
+            if (data.movedToNextQuestion || data.allAnswersRevealedForCurrentQuestion) {
+                 // Tidak perlu pesan terpisah jika backend sudah bilang pindah soal
+                 // Soal akan otomatis update saat fetchCurrentQuestion dipanggil
             }
+
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
         }
-        answerInput.value = ''; // Clear answer input
-        // playerNameInput.value = ''; // Optionally clear player name after each submission, or let it stay for repeated answers
-        fetchCurrentQuestion(); // Update main game display
+        answerInput.value = '';
+        fetchCurrentQuestion(); // Always fetch current question to update display
     } catch (error) {
         console.error("Error submitting player answer:", error);
         showMessage("Terjadi kesalahan saat submit jawaban pemain. Coba lagi.", 'error', 5000);
@@ -86,7 +84,7 @@ async function fetchCurrentQuestion() {
         const data = await response.json();
 
         if (data.gameEnded) {
-            questionElement.innerText = data.question; // "Game Selesai!"
+            questionElement.innerText = data.question;
             answersList.innerHTML = '<li class="answer-item"><span class="answer-text">Terima kasih sudah bermain!</span></li>';
             totalScoreElement.innerText = data.score;
             showMessage("Game telah berakhir. Silakan reset untuk mulai baru.", 'info', 5000);
@@ -96,18 +94,28 @@ async function fetchCurrentQuestion() {
         questionElement.innerText = data.question;
         totalScoreElement.innerText = data.score;
 
-        answersList.innerHTML = ''; // Kosongkan daftar jawaban sebelumnya
-        data.revealedAnswers.forEach(ans => {
+        answersList.innerHTML = '';
+        // Buat item jawaban bahkan jika belum terungkap
+        // Ini memastikan jumlah kotak jawaban tetap konsisten
+        const currentSoal = await fetch(`${API_URL}/current-question`).then(res => res.json()); // Ambil ulang data soal lengkap untuk tahu berapa banyak kotak
+        currentSoal.answers.forEach((ansTemplate, index) => {
             const li = document.createElement('li');
             li.classList.add('answer-item');
-            if (ans.isRevealed) {
+            
+            // Cari jawaban yang sesuai di data.revealedAnswers
+            const revealed = data.revealedAnswers.find(revealedAns => revealedAns.text.toLowerCase() === ansTemplate.text.toLowerCase());
+
+            if (revealed && revealed.isRevealed) {
                 li.classList.add('revealed');
-                li.innerHTML = `<span class="answer-text">${ans.text}</span><span class="answer-score">${ans.score}</span>`;
+                li.innerHTML = `<span class="answer-text">${revealed.text}</span><span class="answer-score">${revealed.score}</span>`;
             } else {
-                li.innerHTML = `<span class="answer-text placeholder">${ans.text}</span><span class="answer-score"></span>`;
+                // Tampilkan placeholder jika belum terungkap
+                // Anda bisa gunakan angka 1, 2, 3... atau garis
+                li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
             }
             answersList.appendChild(li);
         });
+
     } catch (error) {
         console.error("Error fetching current question:", error);
         questionElement.innerText = "Gagal memuat game. Pastikan backend berjalan!";
@@ -124,7 +132,7 @@ async function nextQuestion() {
         const data = await response.json();
         if (data.success) {
             showMessage(data.message, 'success');
-            fetchCurrentQuestion();
+            fetchCurrentQuestion(); // Fetch new question
         } else {
             showMessage("Gagal pindah soal: " + data.message, 'error');
         }
@@ -143,10 +151,9 @@ async function resetGame() {
         const data = await response.json();
         if (data.success) {
             showMessage(data.message, 'success');
-            // Reset leaderboard on frontend as well
-            playerLeaderboard = [];
+            playerLeaderboard = []; // Reset leaderboard on frontend as well
             updateLeaderboardDisplay();
-            fetchCurrentQuestion();
+            fetchCurrentQuestion(); // Fetch the first (newly shuffled) question
         } else {
             showMessage("Gagal me-reset game: " + data.message, 'error');
         }
@@ -156,8 +163,7 @@ async function resetGame() {
     }
 }
 
-// Initial load
 document.addEventListener('DOMContentLoaded', () => {
     fetchCurrentQuestion();
-    updateLeaderboardDisplay(); // Display empty or initial leaderboard
+    updateLeaderboardDisplay();
 });
