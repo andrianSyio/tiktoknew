@@ -7,8 +7,8 @@
 
 /* General Body and Main Container */
 body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #000000;
+    font-family: 'Montserrat', sans-serif; /* Modern, clean font */
+    background-color: #000000; /* Pure black background untuk di luar area game display */
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -16,27 +16,27 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #e0e0e0;
+    color: #e0e0e0; /* Light gray text default */
 }
 
 .app-container {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background-color: #000000;
+    background-color: #000000; /* Consistent pure black background */
 }
 
 /* --- Game Display Area (Left Column, for OBS Capture) --- */
 .game-display-area {
-    flex: 3;
-    background-color: #FFFFFF;
+    flex: 3; /* Takes 70% of the width */
+    background-color: #FFFFFF; /* Putih bersih */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 40px;
+    padding: 40px; /* Increased padding for more breathing room */
     box-sizing: border-box;
-    position: relative; /* Penting untuk posisi overlay pemenang */
-    border-right: 2px solid #E0E0E0;
+    position: relative;
+    border-right: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
 }
 
 /* Optional: Overlay for live video (if OBS is configured) */
@@ -47,7 +47,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(255, 255, 255, 0);
+    background-color: rgba(255, 255, 255, 0); /* Sepenuhnya transparan */
     z-index: 0;
 }
 
@@ -56,19 +56,19 @@ body {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 25px;
-    border-bottom: 2px solid #E0E0E0;
+    border-bottom: 2px solid #E0E0E0; /* Border pembatas yang lebih lembut */
     margin-bottom: 30px;
     z-index: 1;
-    position: relative; /* Penting untuk notifikasi pemain */
+    position: relative; /* Penting untuk posisi overlay notifikasi pemain */
 }
 
-/* --- BARU: Gaya Notifikasi Pemain --- */
+/* Gaya Notifikasi Pemain */
 .player-notification {
     position: absolute;
-    top: 0; /* Sesuaikan posisi jika perlu */
-    left: 0; /* Sesuaikan posisi jika perlu */
-    width: 100%; /* Atau sesuaikan lebar */
-    height: 100%; /* Ambil ruang header */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -82,14 +82,12 @@ body {
     transition: opacity 0.5s ease-in-out;
     pointer-events: none; /* Agar tidak menghalangi klik */
     z-index: 10; /* Pastikan di atas elemen header lainnya */
-    border-radius: 10px; /* Sudut membulat */
-    /* text-shadow: 0 0 10px rgba(255, 235, 59, 0.7); */ /* Opsional: sedikit glow */
+    border-radius: 10px;
 }
 
 .player-notification.show {
     opacity: 1; /* Tampilkan notifikasi */
 }
-/* END NOTIFIKASI */
 
 .header-label {
     font-family: 'Oswald', sans-serif;
@@ -97,7 +95,6 @@ body {
     font-weight: 700;
     color: #4CAF50;
     letter-spacing: 3px;
-    /* text-shadow: none; */
 }
 
 .score-box {
@@ -148,7 +145,7 @@ body {
 
 .question-text {
     font-family: 'Oswald', sans-serif;
-    font-size: 2.8em;
+    font-size: 2.8em; /* Ukuran font pertanyaan */
     font-weight: 700;
     color: #212121;
     margin: 0;
@@ -159,7 +156,7 @@ body {
     flex-grow: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Memusatkan vertikal */
     z-index: 1;
     padding-bottom: 20px;
 }
@@ -169,46 +166,48 @@ body {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    max-width: 550px;
-    width: 100%;
-    height: calc((70px * 5) + (15px * 4));
+    grid-template-columns: 1fr 1fr; /* 2 kolom dengan lebar yang sama */
+    gap: 15px; /* Jarak antar kotak */
+    max-width: 550px; /* Batasi lebar keseluruhan daftar jawaban */
+    width: 100%; /* Ambil 100% dari max-width */
+    height: auto; /* Biarkan grid menghitung tingginya */
+    /* Opsional: Untuk menjaga tinggi total konstan jika mau, tapi auto lebih fleksibel */
+    /* height: calc((70px * 3) + (15px * 2)); // 3 baris: (tinggi item * 3) + (gap * 2) */
 }
 
 .answer-item {
-    background-color: #FFFFFF;
-    padding: 20px 25px;
+    background-color: #FFFFFF; /* Putih bersih */
+    padding: 20px 25px; /* Padding disesuaikan */
     border-radius: 12px;
-    font-size: 2.5em;
+    font-size: 2.5em; /* Font tetap besar */
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 2px solid #212121;
+    border: 2px solid #212121; /* Border hitam gelap agar sangat terlihat di background putih */
     transition: all 0.3s ease-in-out;
-    color: #212121;
-    height: 70px;
-    box-sizing: border-box;
+    color: #212121; /* Hitam gelap untuk teks jawaban */
+    height: 70px; /* Tinggi tetap untuk setiap kotak */
+    box-sizing: border-box; /* Pastikan padding dan border masuk perhitungan tinggi */
 }
 
 /* Aturan Grid untuk Layout 1-2-2 */
 .answers-list li:nth-child(1) {
-    grid-column: span 2;
+    grid-column: span 2; /* Kotak pertama ambil 2 kolom */
 }
 
 .answers-list li:nth-child(2),
 .answers-list li:nth-child(3),
 .answers-list li:nth-child(4),
 .answers-list li:nth-child(5) {
-    grid-column: span 1;
+    grid-column: span 1; /* Kotak sisanya ambil 1 kolom */
 }
 
 
 .answer-item.revealed {
-    background-color: #4CAF50;
-    border-color: #81C784;
-    color: #fff;
+    background-color: #4CAF50; /* Hijau terang saat terungkap */
+    border-color: #81C784; /* Border hijau lebih terang */
+    color: #fff; /* Teks putih saat terungkap */
     font-weight: 700;
 }
 
@@ -232,41 +231,40 @@ body {
     font-style: italic;
 }
 
-/* --- BARU: Gaya Layar Pemenang --- */
+/* Gaya Layar Pemenang */
 .winner-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.95); /* Hampir hitam penuh, sedikit transparan */
+    background-color: rgba(0, 0, 0, 0.95);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    z-index: 100; /* Pastikan di atas semua elemen game */
-    opacity: 0; /* Dimulai tersembunyi */
+    z-index: 100;
+    opacity: 0;
     transition: opacity 0.5s ease-in-out;
 }
 
 .winner-overlay.show {
-    opacity: 1; /* Tampilkan overlay */
+    opacity: 1;
 }
 
 .winner-overlay.hidden {
-    display: none; /* Sembunyikan sepenuhnya ketika tidak aktif */
+    display: none;
 }
 
 .winner-title {
     font-family: 'Oswald', sans-serif;
     font-size: 4.5em;
     font-weight: 700;
-    color: #FFEB3B; /* Kuning cerah */
+    color: #FFEB3B;
     margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 3px;
-    /* text-shadow: 0 0 20px rgba(255, 235, 59, 0.7); */ /* Opsional: glow tipis */
 }
 
 .winner-message {
@@ -278,13 +276,12 @@ body {
 
 .round-winner-name {
     font-family: 'Oswald', sans-serif;
-    font-size: 6em; /* Sangat besar untuk nama pemenang */
+    font-size: 6em;
     font-weight: 900;
-    color: #4CAF50; /* Hijau segar */
+    color: #4CAF50;
     margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 4px;
-    /* text-shadow: 0 0 25px rgba(76, 175, 80, 0.8); */ /* Opsional: glow nama pemenang */
 }
 
 .winner-score-info {
@@ -295,11 +292,10 @@ body {
 
 .winner-score-info span {
     font-family: 'Oswald', sans-serif;
-    font-size: 1.2em; /* Lebih besar dari teks info lainnya */
+    font-size: 1.2em;
     font-weight: 700;
-    color: #FF1744; /* Merah terang */
+    color: #FF1744;
 }
-/* END LAYAR PEMENANG */
 
 
 /* --- Admin Panel (Right Column, for Host Use) --- */
