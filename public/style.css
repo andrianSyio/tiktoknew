@@ -35,7 +35,7 @@ body {
     justify-content: space-between;
     padding: 40px;
     box-sizing: border-box;
-    position: relative;
+    position: relative; /* Penting untuk posisi overlay pemenang */
     border-right: 2px solid #E0E0E0;
 }
 
@@ -59,7 +59,37 @@ body {
     border-bottom: 2px solid #E0E0E0;
     margin-bottom: 30px;
     z-index: 1;
+    position: relative; /* Penting untuk notifikasi pemain */
 }
+
+/* --- BARU: Gaya Notifikasi Pemain --- */
+.player-notification {
+    position: absolute;
+    top: 0; /* Sesuaikan posisi jika perlu */
+    left: 0; /* Sesuaikan posisi jika perlu */
+    width: 100%; /* Atau sesuaikan lebar */
+    height: 100%; /* Ambil ruang header */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.9); /* Latar belakang gelap untuk notifikasi */
+    color: #FFEB3B; /* Warna teks kuning cerah */
+    font-family: 'Oswald', sans-serif;
+    font-size: 3.5em; /* Ukuran besar */
+    font-weight: 700;
+    letter-spacing: 2px;
+    opacity: 0; /* Dimulai tersembunyi */
+    transition: opacity 0.5s ease-in-out;
+    pointer-events: none; /* Agar tidak menghalangi klik */
+    z-index: 10; /* Pastikan di atas elemen header lainnya */
+    border-radius: 10px; /* Sudut membulat */
+    /* text-shadow: 0 0 10px rgba(255, 235, 59, 0.7); */ /* Opsional: sedikit glow */
+}
+
+.player-notification.show {
+    opacity: 1; /* Tampilkan notifikasi */
+}
+/* END NOTIFIKASI */
 
 .header-label {
     font-family: 'Oswald', sans-serif;
@@ -67,6 +97,7 @@ body {
     font-weight: 700;
     color: #4CAF50;
     letter-spacing: 3px;
+    /* text-shadow: none; */
 }
 
 .score-box {
@@ -139,18 +170,15 @@ body {
     margin: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px; /* Jarak antar kotak */
-    /* --- PERUBAHAN DI SINI: Max-width yang lebih kecil --- */
-    max-width: 550px; /* Dikurangi dari 700px */
-    width: 100%; /* Pastikan mengambil 100% dari max-width-nya */
-    height: calc((70px * 5) + (15px * 4)); /* Tinggi 5 kotak + 4 celah (gap) */
-    /* Sesuaikan height jika gap diubah */
+    gap: 15px;
+    max-width: 550px;
+    width: 100%;
+    height: calc((70px * 5) + (15px * 4));
 }
 
 .answer-item {
     background-color: #FFFFFF;
-    /* --- PERUBAHAN DI SINI: Padding horizontal dikurangi --- */
-    padding: 20px 25px; /* Dikurangi dari 35px */
+    padding: 20px 25px;
     border-radius: 12px;
     font-size: 2.5em;
     font-weight: 600;
@@ -162,8 +190,6 @@ body {
     color: #212121;
     height: 70px;
     box-sizing: border-box;
-    /* --- Opsional: Sesuaikan font-size jika teks masih terlalu panjang --- */
-    /* font-size: 2.3em; */
 }
 
 /* Aturan Grid untuk Layout 1-2-2 */
@@ -205,6 +231,75 @@ body {
     color: #9E9E9E;
     font-style: italic;
 }
+
+/* --- BARU: Gaya Layar Pemenang --- */
+.winner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95); /* Hampir hitam penuh, sedikit transparan */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 100; /* Pastikan di atas semua elemen game */
+    opacity: 0; /* Dimulai tersembunyi */
+    transition: opacity 0.5s ease-in-out;
+}
+
+.winner-overlay.show {
+    opacity: 1; /* Tampilkan overlay */
+}
+
+.winner-overlay.hidden {
+    display: none; /* Sembunyikan sepenuhnya ketika tidak aktif */
+}
+
+.winner-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 4.5em;
+    font-weight: 700;
+    color: #FFEB3B; /* Kuning cerah */
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    /* text-shadow: 0 0 20px rgba(255, 235, 59, 0.7); */ /* Opsional: glow tipis */
+}
+
+.winner-message {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.8em;
+    color: #E0E0E0;
+    margin-bottom: 10px;
+}
+
+.round-winner-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 6em; /* Sangat besar untuk nama pemenang */
+    font-weight: 900;
+    color: #4CAF50; /* Hijau segar */
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    /* text-shadow: 0 0 25px rgba(76, 175, 80, 0.8); */ /* Opsional: glow nama pemenang */
+}
+
+.winner-score-info {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2em;
+    color: #E0E0E0;
+}
+
+.winner-score-info span {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.2em; /* Lebih besar dari teks info lainnya */
+    font-weight: 700;
+    color: #FF1744; /* Merah terang */
+}
+/* END LAYAR PEMENANG */
 
 
 /* --- Admin Panel (Right Column, for Host Use) --- */
@@ -392,6 +487,16 @@ body {
     .admin-panel {
         flex: 1;
     }
+    /* Notifikasi dan pemenang responsif */
+    .player-notification {
+        font-size: 2.8em;
+    }
+    .winner-title {
+        font-size: 3.5em;
+    }
+    .round-winner-name {
+        font-size: 5em;
+    }
 }
 
 @media (max-width: 900px) {
@@ -434,6 +539,16 @@ body {
     .admin-panel h2 {
         font-size: 1.6em;
     }
+    /* Notifikasi dan pemenang responsif */
+    .player-notification {
+        font-size: 2.2em;
+    }
+    .winner-title {
+        font-size: 2.8em;
+    }
+    .round-winner-name {
+        font-size: 4em;
+    }
 }
 
 @media (max-width: 600px) {
@@ -466,5 +581,15 @@ body {
     }
     .admin-section h3 {
         font-size: 1.2em;
+    }
+    /* Notifikasi dan pemenang responsif */
+    .player-notification {
+        font-size: 1.8em;
+    }
+    .winner-title {
+        font-size: 2em;
+    }
+    .round-winner-name {
+        font-size: 3em;
     }
 }
