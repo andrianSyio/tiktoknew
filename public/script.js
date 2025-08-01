@@ -55,16 +55,13 @@ function updateLeaderboardDisplay() {
 }
 
 // Fungsi untuk menampilkan layar pemenang per putaran
-function showRoundWinnerScreen() {
+function showRoundWinnerScreen(finalScore, roundTopPlayer) {
     // Sembunyikan elemen game utama
     questionBox.classList.add('hidden');
     answersContainer.classList.add('hidden');
 
-    // Cari pemain dengan skor tertinggi di leaderboard saat ini
-    const topPlayer = playerLeaderboard.length > 0 ? playerLeaderboard[0] : { name: "Tidak Ada", score: 0 };
-
-    roundWinnerName.textContent = topPlayer.name;
-    roundWinnerScore.textContent = topPlayer.score;
+    roundWinnerName.textContent = roundTopPlayer.name;
+    roundWinnerScore.textContent = roundTopPlayer.score;
     winnerOverlay.classList.remove('hidden'); // Pastikan display:flex aktif
     setTimeout(() => {
         winnerOverlay.classList.add('show'); // Aktifkan transisi opacity
@@ -76,13 +73,47 @@ function showRoundWinnerScreen() {
         // Setelah transisi selesai, sembunyikan sepenuhnya dan panggil fetchCurrentQuestion
         setTimeout(() => {
             winnerOverlay.classList.add('hidden');
-            // Tampilkan kembali elemen game utama
+            // Tampilkan kembali elemen game utama (akan diisi soal baru oleh fetchCurrentQuestion)
             questionBox.classList.remove('hidden');
             answersContainer.classList.remove('hidden');
             fetchCurrentQuestion(); // Ambil soal baru
         }, 500); // Sesuaikan dengan durasi transisi opacity CSS
     }, WINNER_SCREEN_DURATION);
 }
+
+// Fungsi bantu untuk merender jawaban (digunakan oleh fetchCurrentQuestion dan submitPlayerAnswer)
+function renderAnswers(allAnswers, revealedAnswersData) {
+    answersList.innerHTML = '';
+    const revealedAnswerTexts = new Set(revealedAnswersData.map(ans => ans.text.toLowerCase())); // Untuk pencarian cepat
+
+    const numberOfAnswerSlots = 5;
+    for (let i = 0; i < numberOfAnswerSlots; i++) {
+        const li = document.createElement('li');
+        li.classList.add('answer-item');
+
+        const originalAnswerDefinition = allAnswers[i]; // Ambil definisi jawaban asli untuk slot ini
+
+        if (originalAnswerDefinition) {
+            const isRevealed = revealedAnswerTexts.has(originalAnswerDefinition.text.toLowerCase());
+
+            if (isRevealed) {
+                // Ambil data skor dari revealedAnswersData, bukan dari originalAnswerDefinition
+                const actualRevealedData = revealedAnswersData.find(
+                    revealed => revealed.text.toLowerCase() === originalAnswerDefinition.text.toLowerCase()
+                );
+                li.classList.add('revealed');
+                li.innerHTML = `<span class="answer-text">${actualRevealedData.text}</span><span class="answer-score">${actualRevealedData.score}</span>`;
+            } else {
+                li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
+            }
+        } else {
+            // Untuk slot jika jumlah jawaban asli kurang dari numberOfAnswerSlots
+            li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
+        }
+        answersList.appendChild(li);
+    }
+}
+
 
 async function submitPlayerAnswer() {
     const playerName = playerNameInput.value.trim();
@@ -99,7 +130,10 @@ async function submitPlayerAnswer() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ answer })
         });
-        const data = await response.json();
+        const data = await response.json(); // Mengandung updated score, revealedAnswers, answers
+
+        // --- UPDATE TOTAL SKOR LANGSUNG DARI RESPON ---
+        totalScoreElement.innerText = data.score;
 
         if (data.success) {
             showPlayerAnswerNotification(playerName, data.scoreAdded);
@@ -112,15 +146,20 @@ async function submitPlayerAnswer() {
             }
             updateLeaderboardDisplay();
 
+            // --- RENDER JAWABAN LANGSUNG DARI RESPON ---
+            renderAnswers(data.answers, data.revealedAnswers); // Gunakan data dari respons POST
+
             if (data.allAnswersRevealedForCurrentQuestion) {
-                showRoundWinnerScreen();
-            } else {
-                fetchCurrentQuestion();
+                // Dapatkan pemain terbaik saat ini untuk putaran ini
+                const topPlayer = playerLeaderboard.length > 0 ? playerLeaderboard[0] : { name: "Tidak Ada", score: 0 };
+                showRoundWinnerScreen(data.score, topPlayer); // Kirim skor dan top player saat ini
             }
 
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
-            fetchCurrentQuestion();
+            // Jika jawaban salah, tetap perbarui tampilan jawaban (mungkin ada yang terungkap dari tebakan sebelumnya)
+            // Atau cukup biarkan tampilan apa adanya jika Anda hanya ingin update pada jawaban benar.
+            // renderAnswers(data.answers, data.revealedAnswers); // Opsional: perbarui juga jika salah
         }
         answerInput.value = '';
     } catch (error) {
@@ -145,42 +184,9 @@ async function fetchCurrentQuestion() {
         }
 
         questionElement.innerText = data.question;
-        totalScoreElement.innerText = data.score;
+        totalScoreElement.innerText = data.score; // Update skor dari GET request
 
-        answersList.innerHTML = '';
-        // --- PERBAIKAN LOGIKA DI SINI ---
-        const allPossibleAnswersForCurrentQuestion = data.answers; // Ini adalah daftar lengkap semua jawaban untuk soal ini
-        const revealedAnswerTexts = new Set(data.revealedAnswers.map(ans => ans.text.toLowerCase())); // Buat Set untuk pencarian cepat
-
-        const numberOfAnswerSlots = 5; // Kita ingin 5 kotak tampilan
-
-        for (let i = 0; i < numberOfAnswerSlots; i++) {
-            const li = document.createElement('li');
-            li.classList.add('answer-item');
-
-            const originalAnswerDefinition = allPossibleAnswersForCurrentQuestion[i]; // Ambil definisi jawaban asli
-
-            if (originalAnswerDefinition) { // Pastikan ada jawaban untuk slot ini (misal kalau data.answers < 5)
-                const isRevealed = revealedAnswerTexts.has(originalAnswerDefinition.text.toLowerCase());
-
-                if (isRevealed) {
-                    // Cari objek jawaban yang terungkap untuk mendapatkan skornya
-                    const actualRevealedData = data.revealedAnswers.find(
-                        revealed => revealed.text.toLowerCase() === originalAnswerDefinition.text.toLowerCase()
-                    );
-                    li.classList.add('revealed');
-                    li.innerHTML = `<span class="answer-text">${actualRevealedData.text}</span><span class="answer-score">${actualRevealedData.score}</span>`;
-                } else {
-                    // Tampilkan placeholder jika belum terungkap
-                    li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
-                }
-            } else {
-                // Jika data.answers hanya punya 3 jawaban, tapi kita render 5 slot, 2 slot sisanya akan jadi placeholder kosong
-                li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
-            }
-            answersList.appendChild(li);
-        }
-        // --- AKHIR PERBAIKAN LOGIKA ---
+        renderAnswers(data.answers, data.revealedAnswers); // Gunakan data dari GET request
 
     } catch (error) {
         console.error("Error fetching current question:", error);
@@ -203,9 +209,13 @@ async function nextQuestion() {
         const data = await response.json();
         if (data.success) {
             showMessage(data.message, 'success');
-            fetchCurrentQuestion();
+            // Langsung update UI dari respons next-question
+            questionElement.innerText = data.question;
+            totalScoreElement.innerText = data.score;
+            renderAnswers(data.answers, data.revealedAnswers);
         } else {
             showMessage("Gagal pindah soal: " + data.message, 'error');
+            fetchCurrentQuestion(); // Tetap fetch untuk update state
         }
     } catch (error) {
         console.error("Error moving to next question:", error);
@@ -229,7 +239,10 @@ async function resetGame() {
             showMessage(data.message, 'success');
             playerLeaderboard = [];
             updateLeaderboardDisplay();
-            fetchCurrentQuestion();
+            // Langsung update UI dari respons reset-game
+            questionElement.innerText = data.question;
+            totalScoreElement.innerText = data.score;
+            renderAnswers(data.answers, data.revealedAnswers);
         } else {
             showMessage("Gagal me-reset game: " + data.message, 'error');
         }
