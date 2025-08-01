@@ -33,11 +33,10 @@ async function showMessage(msg, type = 'info', duration = 3000) {
     }, duration);
 }
 
-// --- BARU: Fungsi untuk menampilkan notifikasi pemain ---
+// Fungsi untuk menampilkan notifikasi pemain
 function showPlayerAnswerNotification(playerName, scoreAdded) {
     playerNotification.textContent = `${playerName} MENDAPAT +${scoreAdded} POIN!`;
     playerNotification.classList.add('show');
-    // Sembunyikan notifikasi setelah durasi tertentu
     setTimeout(() => {
         playerNotification.classList.remove('show');
     }, NOTIFICATION_DURATION);
@@ -55,7 +54,7 @@ function updateLeaderboardDisplay() {
     });
 }
 
-// --- BARU: Fungsi untuk menampilkan layar pemenang per putaran ---
+// Fungsi untuk menampilkan layar pemenang per putaran
 function showRoundWinnerScreen() {
     // Sembunyikan elemen game utama
     questionBox.classList.add('hidden');
@@ -66,18 +65,16 @@ function showRoundWinnerScreen() {
 
     roundWinnerName.textContent = topPlayer.name;
     roundWinnerScore.textContent = topPlayer.score;
-    winnerOverlay.classList.remove('hidden'); // Pastikan display:flex aktif
+    winnerOverlay.classList.remove('hidden');
     setTimeout(() => {
-        winnerOverlay.classList.add('show'); // Aktifkan transisi opacity
-    }, 50); // Delay kecil agar transisi berfungsi
+        winnerOverlay.classList.add('show');
+    }, 50);
 
     // Sembunyikan layar pemenang dan lanjutkan ke soal berikutnya setelah durasi
     setTimeout(() => {
         winnerOverlay.classList.remove('show');
-        // Setelah transisi selesai, sembunyikan sepenuhnya dan panggil fetchCurrentQuestion
         setTimeout(() => {
             winnerOverlay.classList.add('hidden');
-            // Tampilkan kembali elemen game utama
             questionBox.classList.remove('hidden');
             answersContainer.classList.remove('hidden');
             fetchCurrentQuestion(); // Ambil soal baru
@@ -103,7 +100,7 @@ async function submitPlayerAnswer() {
         const data = await response.json();
 
         if (data.success) {
-            showPlayerAnswerNotification(playerName, data.scoreAdded); // Tampilkan notifikasi
+            showPlayerAnswerNotification(playerName, data.scoreAdded);
 
             let player = playerLeaderboard.find(p => p.name.toLowerCase() === playerName.toLowerCase());
             if (player) {
@@ -113,20 +110,17 @@ async function submitPlayerAnswer() {
             }
             updateLeaderboardDisplay();
 
-            // --- PENTING: Logika Layar Pemenang Per Putaran ---
             if (data.allAnswersRevealedForCurrentQuestion) {
-                // Jangan langsung fetchCurrentQuestion di sini, biarkan showRoundWinnerScreen yang memicu
-                showRoundWinnerScreen(); // Tampilkan layar pemenang
+                showRoundWinnerScreen();
             } else {
-                fetchCurrentQuestion(); // Update main game display jika belum semua terjawab
+                fetchCurrentQuestion();
             }
 
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
-            fetchCurrentQuestion(); // Tetap update display meskipun salah
+            fetchCurrentQuestion();
         }
-        answerInput.value = ''; // Clear answer input
-        // playerNameInput.value = ''; // Opsional: bersihkan nama pemain
+        answerInput.value = '';
     } catch (error) {
         console.error("Error submitting player answer:", error);
         showMessage("Terjadi kesalahan saat submit jawaban pemain. Coba lagi.", 'error', 5000);
@@ -143,7 +137,6 @@ async function fetchCurrentQuestion() {
             answersList.innerHTML = '<li class="answer-item"><span class="answer-text">Terima kasih sudah bermain!</span></li>';
             totalScoreElement.innerText = data.score;
             showMessage("Game telah berakhir. Silakan reset untuk mulai baru.", 'info', 5000);
-            // Pastikan overlay game kembali terlihat jika game berakhir
             questionBox.classList.remove('hidden');
             answersContainer.classList.remove('hidden');
             return;
@@ -153,7 +146,7 @@ async function fetchCurrentQuestion() {
         totalScoreElement.innerText = data.score;
 
         answersList.innerHTML = '';
-        const numberOfAnswerSlots = 5;
+        const numberOfAnswerSlots = 5; // --- PASTIKAN INI 5 ---
         for (let i = 0; i < numberOfAnswerSlots; i++) {
             const li = document.createElement('li');
             li.classList.add('answer-item');
@@ -180,7 +173,6 @@ async function nextQuestion() {
     if (!confirm("Yakin ingin pindah ke soal berikutnya? Jawaban yang belum terungkap akan hilang.")) {
         return;
     }
-    // Pastikan tidak ada layar pemenang yang sedang aktif
     winnerOverlay.classList.add('hidden');
     winnerOverlay.classList.remove('show');
     questionBox.classList.remove('hidden');
@@ -205,7 +197,6 @@ async function resetGame() {
     if (!confirm("Yakin ingin me-reset game? Semua skor dan progres akan hilang.")) {
         return;
     }
-    // Pastikan tidak ada layar pemenang yang sedang aktif
     winnerOverlay.classList.add('hidden');
     winnerOverlay.classList.remove('show');
     questionBox.classList.remove('hidden');
