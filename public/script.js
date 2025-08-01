@@ -1,5 +1,9 @@
 // public/script.js
 
+// --- BARU: Inisialisasi Socket.IO Client ---
+// window.location.origin akan secara otomatis menggunakan domain Vercel Anda
+const socket = io(window.location.origin);
+
 const API_URL = '/api'; // Tetap /api untuk Vercel deployment
 
 const questionElement = document.getElementById('question');
@@ -11,23 +15,20 @@ const playerNameInput = document.getElementById('playerNameInput');
 const answerInput = document.getElementById('answerInput');
 const leaderboardElement = document.getElementById('leaderboard');
 
-// Elemen baru untuk notifikasi dan layar pemenang
 const playerNotification = document.getElementById('playerNotification');
 const winnerOverlay = document.getElementById('winnerOverlay');
 const roundWinnerName = document.getElementById('roundWinnerName');
 const roundWinnerScore = document.getElementById('roundWinnerScore');
 const questionBox = document.getElementById('questionBox');
 const answersContainer = document.getElementById('answersContainer');
-const toggleRefreshButton = document.getElementById('toggleRefreshButton'); // Tombol baru
+const toggleRefreshButton = document.getElementById('toggleRefreshButton'); // Tombol ini mungkin tidak lagi digunakan untuk auto-refresh
 
 let playerLeaderboard = []; // In-memory leaderboard data (frontend saja)
 
-// Durasi tampilnya notifikasi dan layar pemenang (dalam milidetik)
-const NOTIFICATION_DURATION = 3000; // 3 detik
-const WINNER_SCREEN_DURATION = 6000; // 6 detik
-const AUTO_REFRESH_INTERVAL_MS = 2000; // Auto-refresh setiap 2 detik
-
-let autoRefreshIntervalId = null; // ID untuk setInterval, agar bisa di-clear
+const NOTIFICATION_DURATION = 3000;
+const WINNER_SCREEN_DURATION = 6000;
+// const AUTO_REFRESH_INTERVAL_MS = 2000; // Tidak lagi digunakan untuk auto-refresh
+// let autoRefreshIntervalId = null; // Tidak lagi digunakan
 
 async function showMessage(msg, type = 'info', duration = 3000) {
     messageElement.textContent = msg;
@@ -37,7 +38,6 @@ async function showMessage(msg, type = 'info', duration = 3000) {
     }, duration);
 }
 
-// Fungsi untuk menampilkan notifikasi pemain (hanya dipicu dari submit manual)
 function showPlayerAnswerNotification(playerName, scoreAdded) {
     playerNotification.textContent = `${playerName} +${scoreAdded} PT!`;
     playerNotification.classList.add('show');
@@ -58,11 +58,8 @@ function updateLeaderboardDisplay() {
     });
 }
 
-// Fungsi untuk menampilkan layar pemenang per putaran
 function showRoundWinnerScreen(finalScore, roundTopPlayer) {
-    // Pastikan auto-refresh dihentikan saat layar pemenang muncul
-    stopAutoRefresh(); 
-
+    // stopAutoRefresh(); // Tidak perlu lagi jika tidak ada setInterval
     questionBox.classList.add('hidden');
     answersContainer.classList.add('hidden');
 
@@ -77,15 +74,14 @@ function showRoundWinnerScreen(finalScore, roundTopPlayer) {
         winnerOverlay.classList.remove('show');
         setTimeout(() => {
             winnerOverlay.classList.add('hidden');
-            questionBox.classList.remove('hidden');
-            answersContainer.classList.remove('hidden');
-            fetchCurrentQuestion(); // Ambil soal baru
-            startAutoRefresh(); // Mulai lagi auto-refresh setelah soal baru dimuat
+            // Setelah layar pemenang, backend akan emit 'game_state_update' untuk soal baru
+            // fetchCurrentQuestion(); // Tidak perlu panggil di sini, akan ada dari WebSocket
+            // startAutoRefresh(); // Tidak perlu lagi
         }, 500);
     }, WINNER_SCREEN_DURATION);
 }
 
-// Fungsi bantu untuk merender jawaban
+// Fungsi bantu untuk merender jawaban (digunakan ketika menerima update via WebSocket)
 function renderAnswers(allAnswers, revealedAnswersData) {
     answersList.innerHTML = '';
     const revealedAnswerTexts = new Set(revealedAnswersData.map(ans => ans.text.toLowerCase()));
@@ -132,13 +128,12 @@ async function submitPlayerAnswer() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ answer })
         });
-        const data = await response.json();
+        const data = await response.json(); // Mengandung updated score, revealedAnswers, answers
 
-        totalScoreElement.innerText = data.score; // Update skor langsung
-
+        // UI akan diupdate melalui WebSocket, tapi notifikasi ini bisa tetap instan
         if (data.success) {
-            showPlayerAnswerNotification(playerName, data.scoreAdded); // Tampilkan notifikasi
-            
+            showPlayerAnswerNotification(playerName, data.scoreAdded);
+            // Leaderboard adalah data lokal, jadi update langsung
             let player = playerLeaderboard.find(p => p.name.toLowerCase() === playerName.toLowerCase());
             if (player) {
                 player.score += data.scoreAdded;
@@ -147,16 +142,15 @@ async function submitPlayerAnswer() {
             }
             updateLeaderboardDisplay();
 
-            renderAnswers(data.answers, data.revealedAnswers); // Render jawaban langsung dari respons
-
+            // Layar pemenang juga akan dipicu oleh WebSocket dari backend
+            // Jika Anda ingin ini instan, Anda bisa memicu langsung di sini
             if (data.allAnswersRevealedForCurrentQuestion) {
                 const topPlayer = playerLeaderboard.length > 0 ? playerLeaderboard[0] : { name: "Tidak Ada", score: 0 };
-                showRoundWinnerScreen(data.score, topPlayer);
+                showRoundWinnerScreen(data.score, topPlayer); 
             }
-
         } else {
             showMessage(`"${answer}" salah. ${data.message || ''}`, 'error');
-            renderAnswers(data.answers, data.revealedAnswers); // Perbarui juga jika salah
+            // Backend akan mengirim update via WebSocket jika ada perubahan status (misal jawaban terungkap)
         }
         answerInput.value = '';
     } catch (error) {
@@ -165,6 +159,7 @@ async function submitPlayerAnswer() {
     }
 }
 
+// fetchCurrentQuestion sekarang hanya untuk inisialisasi awal atau fallback jika WebSocket putus
 async function fetchCurrentQuestion() {
     try {
         const response = await fetch(`${API_URL}/current-question`);
@@ -177,22 +172,17 @@ async function fetchCurrentQuestion() {
             showMessage("Game telah berakhir. Silakan reset untuk mulai baru.", 'info', 5000);
             questionBox.classList.remove('hidden');
             answersContainer.classList.remove('hidden');
-            stopAutoRefresh(); // Hentikan auto-refresh jika game selesai
-            toggleRefreshButton.textContent = "Mulai Auto-Update"; // Ubah teks tombol
             return;
         }
 
         questionElement.innerText = data.question;
         totalScoreElement.innerText = data.score;
-
         renderAnswers(data.answers, data.revealedAnswers);
 
     } catch (error) {
-        console.error("Error fetching current question:", error);
-        questionElement.innerText = "Gagal memuat game. Pastikan backend berjalan!";
-        showMessage("Gagal memuat game. Cek koneksi server.", 'error', 5000);
-        stopAutoRefresh(); // Hentikan auto-refresh jika ada error
-        toggleRefreshButton.textContent = "Mulai Auto-Update"; // Ubah teks tombol
+        console.error("Error fetching current question (initial load or fallback):", error);
+        questionElement.innerText = "Gagal memuat game. Coba lagi.";
+        showMessage("Gagal memuat game. Cek koneksi server atau WebSocket.", 'error', 5000);
     }
 }
 
@@ -200,7 +190,7 @@ async function nextQuestion() {
     if (!confirm("Yakin ingin pindah ke soal berikutnya? Jawaban yang belum terungkap akan hilang.")) {
         return;
     }
-    stopAutoRefresh(); // Hentikan auto-refresh sementara
+    // Tidak perlu stopAutoRefresh
     winnerOverlay.classList.add('hidden');
     winnerOverlay.classList.remove('show');
     questionBox.classList.remove('hidden');
@@ -209,21 +199,16 @@ async function nextQuestion() {
     try {
         const response = await fetch(`${API_URL}/next-question`, { method: 'POST' });
         const data = await response.json();
+        // UI akan diupdate via WebSocket setelah backend simpan ke DB
         if (data.success) {
             showMessage(data.message, 'success');
-            questionElement.innerText = data.question;
-            totalScoreElement.innerText = data.score;
-            renderAnswers(data.answers, data.revealedAnswers);
-            startAutoRefresh(); // Mulai lagi auto-refresh
         } else {
             showMessage("Gagal pindah soal: " + data.message, 'error');
-            fetchCurrentQuestion();
-            startAutoRefresh(); // Mulai lagi auto-refresh
+            fetchCurrentQuestion(); // Fallback update jika ada error
         }
     } catch (error) {
         console.error("Error moving to next question:", error);
         showMessage("Gagal pindah soal. Cek koneksi server.", 'error', 5000);
-        startAutoRefresh(); // Mulai lagi auto-refresh
     }
 }
 
@@ -231,7 +216,6 @@ async function resetGame() {
     if (!confirm("Yakin ingin me-reset game? Semua skor dan progres akan hilang.")) {
         return;
     }
-    stopAutoRefresh(); // Hentikan auto-refresh sementara
     winnerOverlay.classList.add('hidden');
     winnerOverlay.classList.remove('show');
     questionBox.classList.remove('hidden');
@@ -240,14 +224,11 @@ async function resetGame() {
     try {
         const response = await fetch(`${API_URL}/reset-game`, { method: 'POST' });
         const data = await response.json();
+        // UI akan diupdate via WebSocket setelah backend simpan ke DB
         if (data.success) {
             showMessage(data.message, 'success');
             playerLeaderboard = [];
             updateLeaderboardDisplay();
-            questionElement.innerText = data.question;
-            totalScoreElement.innerText = data.score;
-            renderAnswers(data.answers, data.revealedAnswers);
-            startAutoRefresh(); // Mulai lagi auto-refresh
         } else {
             showMessage("Gagal me-reset game: " + data.message, 'error');
         }
@@ -257,36 +238,54 @@ async function resetGame() {
     }
 }
 
-// --- Fungsi untuk mengontrol auto-refresh ---
-function startAutoRefresh() {
-    if (autoRefreshIntervalId === null) {
-        autoRefreshIntervalId = setInterval(fetchCurrentQuestion, AUTO_REFRESH_INTERVAL_MS);
-        toggleRefreshButton.textContent = "Hentikan Auto-Update";
-        console.log("Auto-refresh dimulai.");
+// Fungsi untuk mengontrol auto-refresh - TIDAK DIGUNAKAN UNTUK POLLING REGULER LAGI
+// Tombol ini bisa diubah fungsinya atau dihapus
+function startAutoRefresh() { console.warn("Auto-refresh (polling) is deprecated for WebSockets."); }
+function stopAutoRefresh() { console.warn("Auto-refresh (polling) is deprecated for WebSockets."); }
+function toggleAutoRefresh() { console.warn("Toggle auto-refresh button is deprecated for WebSockets."); }
+
+
+// --- BARU: Event listener untuk WebSocket ---
+socket.on('connect', () => {
+    console.log('Connected to WebSocket server');
+    // Ketika terhubung, fetch state awal untuk memastikan sinkronisasi
+    fetchCurrentQuestion(); 
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from WebSocket server. Trying to reconnect...');
+    // Mungkin tambahkan logika reconnect atau pesan error ke pengguna
+});
+
+socket.on('connect_error', (err) => {
+    console.error('WebSocket connection error:', err.message);
+    showMessage(`WebSocket Error: ${err.message}. Cek koneksi.`, 'error', 0);
+});
+
+// --- BARU: Mendengarkan update status game dari backend ---
+socket.on('game_state_update', (data) => {
+    console.log("Received game state update via WebSocket:", data);
+    // Jika layar pemenang tidak aktif, update UI utama
+    if (!winnerOverlay.classList.contains('show')) {
+        questionElement.innerText = data.question;
+        totalScoreElement.innerText = data.score;
+        renderAnswers(data.answers, data.revealedAnswers);
     }
-}
-
-function stopAutoRefresh() {
-    if (autoRefreshIntervalId !== null) {
-        clearInterval(autoRefreshIntervalId);
-        autoRefreshIntervalId = null;
-        toggleRefreshButton.textContent = "Mulai Auto-Update";
-        console.log("Auto-refresh dihentikan.");
+    // Jika semua jawaban terungkap (dan bukan game berakhir total), tampilkan layar pemenang
+    if (data.allAnswersRevealedForCurrentQuestion && !data.gameEnded) {
+        // Asumsi leaderboard sudah diupdate secara lokal atau akan diupdate setelah DB write
+        const topPlayer = playerLeaderboard.length > 0 ? playerLeaderboard[0] : { name: "Tidak Ada", score: data.score };
+        showRoundWinnerScreen(data.score, topPlayer);
     }
-}
-
-function toggleAutoRefresh() {
-    if (autoRefreshIntervalId === null) {
-        startAutoRefresh();
-    } else {
-        stopAutoRefresh();
+    // Jika game berakhir total
+    if (data.gameEnded) {
+        // Ini akan ditangani oleh fetchCurrentQuestion yang dipanggil setelah layar pemenang atau reset
     }
-}
+});
 
 
-// Initial load and start auto-refresh
+// Initial load (Ini akan memicu koneksi WebSocket dan fetch state awal)
 document.addEventListener('DOMContentLoaded', () => {
-    fetchCurrentQuestion();
+    // fetchCurrentQuestion(); // Ini akan dipicu oleh event 'connect' WebSocket
     updateLeaderboardDisplay();
-    startAutoRefresh(); // Auto-refresh dimulai secara otomatis saat halaman dimuat
 });
