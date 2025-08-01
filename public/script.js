@@ -65,16 +65,18 @@ function showRoundWinnerScreen() {
 
     roundWinnerName.textContent = topPlayer.name;
     roundWinnerScore.textContent = topPlayer.score;
-    winnerOverlay.classList.remove('hidden');
+    winnerOverlay.classList.remove('hidden'); // Pastikan display:flex aktif
     setTimeout(() => {
-        winnerOverlay.classList.add('show');
-    }, 50);
+        winnerOverlay.classList.add('show'); // Aktifkan transisi opacity
+    }, 50); // Delay kecil agar transisi berfungsi
 
     // Sembunyikan layar pemenang dan lanjutkan ke soal berikutnya setelah durasi
     setTimeout(() => {
         winnerOverlay.classList.remove('show');
+        // Setelah transisi selesai, sembunyikan sepenuhnya dan panggil fetchCurrentQuestion
         setTimeout(() => {
             winnerOverlay.classList.add('hidden');
+            // Tampilkan kembali elemen game utama
             questionBox.classList.remove('hidden');
             answersContainer.classList.remove('hidden');
             fetchCurrentQuestion(); // Ambil soal baru
@@ -146,21 +148,39 @@ async function fetchCurrentQuestion() {
         totalScoreElement.innerText = data.score;
 
         answersList.innerHTML = '';
-        const numberOfAnswerSlots = 5; // --- PASTIKAN INI 5 ---
+        // --- PERBAIKAN LOGIKA DI SINI ---
+        const allPossibleAnswersForCurrentQuestion = data.answers; // Ini adalah daftar lengkap semua jawaban untuk soal ini
+        const revealedAnswerTexts = new Set(data.revealedAnswers.map(ans => ans.text.toLowerCase())); // Buat Set untuk pencarian cepat
+
+        const numberOfAnswerSlots = 5; // Kita ingin 5 kotak tampilan
+
         for (let i = 0; i < numberOfAnswerSlots; i++) {
             const li = document.createElement('li');
             li.classList.add('answer-item');
 
-            const revealedAnswer = data.revealedAnswers[i];
+            const originalAnswerDefinition = allPossibleAnswersForCurrentQuestion[i]; // Ambil definisi jawaban asli
 
-            if (revealedAnswer && revealedAnswer.isRevealed) {
-                li.classList.add('revealed');
-                li.innerHTML = `<span class="answer-text">${revealedAnswer.text}</span><span class="answer-score">${revealedAnswer.score}</span>`;
+            if (originalAnswerDefinition) { // Pastikan ada jawaban untuk slot ini (misal kalau data.answers < 5)
+                const isRevealed = revealedAnswerTexts.has(originalAnswerDefinition.text.toLowerCase());
+
+                if (isRevealed) {
+                    // Cari objek jawaban yang terungkap untuk mendapatkan skornya
+                    const actualRevealedData = data.revealedAnswers.find(
+                        revealed => revealed.text.toLowerCase() === originalAnswerDefinition.text.toLowerCase()
+                    );
+                    li.classList.add('revealed');
+                    li.innerHTML = `<span class="answer-text">${actualRevealedData.text}</span><span class="answer-score">${actualRevealedData.score}</span>`;
+                } else {
+                    // Tampilkan placeholder jika belum terungkap
+                    li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
+                }
             } else {
+                // Jika data.answers hanya punya 3 jawaban, tapi kita render 5 slot, 2 slot sisanya akan jadi placeholder kosong
                 li.innerHTML = `<span class="answer-text placeholder">____</span><span class="answer-score"></span>`;
             }
             answersList.appendChild(li);
         }
+        // --- AKHIR PERBAIKAN LOGIKA ---
 
     } catch (error) {
         console.error("Error fetching current question:", error);
