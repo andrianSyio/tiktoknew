@@ -53,8 +53,10 @@ body {
 
 .game-header {
     display: flex;
-    justify-content: space-between;
+    /* --- PERUBAHAN DI SINI: Flex start dan gap --- */
+    justify-content: flex-start; /* Mulai dari kiri */
     align-items: center;
+    gap: 20px; /* Jarak antara label dan elemen lainnya */
     padding-bottom: 25px;
     border-bottom: 2px solid #E0E0E0;
     margin-bottom: 30px;
@@ -62,32 +64,35 @@ body {
     position: relative;
 }
 
-/* Gaya Notifikasi Pemain */
+/* --- PERUBAHAN DI SINI: Gaya Notifikasi Pemain --- */
 .player-notification {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
+    /* Hapus position absolute dan terkaitnya jika ingin inline */
+    /* position: absolute; */
+    /* top: 0; left: 0; width: 100%; height: 100%; */
+    display: flex; /* Jadikan flex item */
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.9);
-    color: #FFEB3B;
+    background-color: #212121; /* Latar belakang gelap untuk notifikasi */
+    color: #FFEB3B; /* Warna teks kuning cerah */
     font-family: 'Oswald', sans-serif;
-    font-size: 3.5em;
+    font-size: 1.8em; /* Ukuran lebih kecil agar pas di samping */
     font-weight: 700;
-    letter-spacing: 2px;
-    opacity: 0;
+    letter-spacing: 1px;
+    padding: 5px 15px; /* Padding lebih kecil */
+    border-radius: 8px; /* Sudut membulat */
+    opacity: 0; /* Dimulai tersembunyi */
     transition: opacity 0.5s ease-in-out;
-    pointer-events: none;
-    z-index: 10;
-    border-radius: 10px;
+    pointer-events: none; /* Agar tidak menghalangi klik */
+    /* z-index: 10; */ /* Tidak perlu z-index tinggi jika inline */
+    white-space: nowrap; /* Jangan pecah baris */
+    overflow: hidden; /* Sembunyikan jika overflow */
+    text-overflow: ellipsis; /* Tambah elipsis */
 }
 
 .player-notification.show {
-    opacity: 1;
+    opacity: 1; /* Tampilkan notifikasi */
 }
+/* END NOTIFIKASI */
 
 .header-label {
     font-family: 'Oswald', sans-serif;
@@ -95,6 +100,7 @@ body {
     font-weight: 700;
     color: #4CAF50;
     letter-spacing: 3px;
+    flex-shrink: 0; /* Pastikan tidak mengecil saat ada notif */
 }
 
 .score-box {
@@ -105,6 +111,8 @@ body {
     flex-direction: column;
     align-items: center;
     border: 1px solid #FF1744;
+    margin-left: auto; /* Dorong ke kanan */
+    flex-shrink: 0; /* Pastikan tidak mengecil */
 }
 
 .score-box span {
@@ -166,11 +174,11 @@ body {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Selalu 2 kolom */
-    gap: 15px; /* Jarak antar kotak */
-    max-width: 550px; /* Batasi lebar keseluruhan daftar jawaban */
-    width: 100%; /* Ambil 100% dari max-width */
-    height: auto; /* Biarkan grid menghitung tingginya */
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    max-width: 550px;
+    width: 100%;
+    height: auto;
 }
 
 .answer-item {
@@ -185,20 +193,20 @@ body {
     border: 2px solid #212121;
     transition: all 0.3s ease-in-out;
     color: #212121;
-    height: 70px; /* Tinggi tetap untuk setiap kotak */
+    height: 70px;
     box-sizing: border-box;
 }
 
-/* --- ATURAN GRID UNTUK 5 KOTAK (1-2-2 LAYOUT) --- */
+/* Aturan Grid untuk Layout 1-2-2 */
 .answers-list li:nth-child(1) {
-    grid-column: span 2; /* Kotak pertama ambil 2 kolom (100% lebar) */
+    grid-column: span 2;
 }
 
 .answers-list li:nth-child(2),
 .answers-list li:nth-child(3),
 .answers-list li:nth-child(4),
 .answers-list li:nth-child(5) {
-    grid-column: span 1; /* Kotak sisanya ambil 1 kolom (50% lebar) */
+    grid-column: span 1;
 }
 
 
